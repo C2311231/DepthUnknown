@@ -1,32 +1,40 @@
 package io.Depth_Unknown;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.ApplicationListener;
+import io.Depth_Unknown.engine.input.Input;
+import io.Depth_Unknown.engine.physics.Physics;
+import io.Depth_Unknown.engine.rendering.Renderer;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Texture image;
+public class Main implements ApplicationListener {
+    public static Renderer renderer;
+    public static Physics physics;
+    public static Input input;
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+        physics = new Physics();
+        renderer = new Renderer();
+        input = new Input();
     }
+    @Override
+    public void resize(int width, int height) {
 
+    }
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+
+    }
+    @Override
+    public void pause() {
+
+    }
+    @Override
+    public void resume() {
+
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        image.dispose();
+
     }
 }

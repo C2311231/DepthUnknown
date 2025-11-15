@@ -1,8 +1,11 @@
 # Depth Unknown
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+Depth Unknown is a puzzle game in development that combines 2D and 3D mechanics in Java.
+This project is currently in the early development and planning stage for my CS2430 final project.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+## Status
+🚧 Early development - game is not yet functional
+
 
 ## Platforms
 
