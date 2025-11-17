@@ -12,7 +12,7 @@ public class MenuControler implements GameObject {
     public void reset() {
 
     }
-    public void render() {
+    public void render(float delta) {
 
     }
     public void update() {
