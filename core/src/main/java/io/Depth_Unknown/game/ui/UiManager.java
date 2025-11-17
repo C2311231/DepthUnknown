@@ -1,8 +1,8 @@
-package io.Depth_Unknown.game.ui.pause_menu;
+package io.Depth_Unknown.game.ui;
 
 import io.Depth_Unknown.game.GameObject;
 
-public class PauseMenuControler implements GameObject {
+public class UiManager implements GameObject {
 
     @Override
     public void reset() {
