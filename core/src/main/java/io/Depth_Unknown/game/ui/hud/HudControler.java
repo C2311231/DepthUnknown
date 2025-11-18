@@ -28,4 +28,7 @@ public class HudControler implements GameObject {
     public void update(float delta) {
 
     }
+
+    public void resize(int width, int height) {
+    }
 }

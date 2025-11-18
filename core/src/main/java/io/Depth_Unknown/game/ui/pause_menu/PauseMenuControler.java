@@ -28,4 +28,7 @@ public class PauseMenuControler implements GameObject {
     public void destroy() {
 
     }
+
+    public void resize(int width, int height) {
+    }
 }

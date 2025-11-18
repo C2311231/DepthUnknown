@@ -4,7 +4,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -163,7 +162,7 @@ public class EngineInputProcessor implements InputProcessor, ControllerListener 
      * @param name Name of KeyEvent
      * @return A KeyEvent with the name or null if not found
      */
-    private @Nullable KeyEvent getKeyEvent(String name) {
+    private KeyEvent getKeyEvent(String name) {
         for (KeyEvent keyEvent : keyEvents) {
             if (keyEvent.getName().equals(name)) {
                 return keyEvent;
