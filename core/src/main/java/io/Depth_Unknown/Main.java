@@ -37,13 +37,21 @@ public class Main implements ApplicationListener {
         renderer = new Renderer();
         input = new EngineInputProcessor(keybinds);
         entityManager = new EntityManager();
-        uiManager = new UiManager();
         settingsManager = new SettingsManager(gameSettings);
-
+        uiManager = new UiManager(settingsManager);
 
         gameObjects.add(entityManager);
+        gameObjects.add(settingsManager);
         gameObjects.add(uiManager);
-        uiManager.create();
+
+        for (GameObject gameObject : gameObjects) {
+            gameObject.create();
+        }
+
+        settingsManager.registerSetting("Test String", "Hello World!");
+        settingsManager.registerSetting("Test Int", 15);
+        settingsManager.registerSetting("Test Float", 15.2f);
+        settingsManager.registerSetting("Test Bool", false);
     }
 
     /**
@@ -77,7 +85,7 @@ public class Main implements ApplicationListener {
     @Override
     public void pause() {
         keybinds.flush();
-        gameState.flush();
+        gameSettings.flush();
     }
 
     /**

@@ -1,6 +1,7 @@
 package io.Depth_Unknown.game.ui;
 
 import io.Depth_Unknown.game.GameObject;
+import io.Depth_Unknown.game.SettingsManager;
 import io.Depth_Unknown.game.ui.hud.HudControler;
 import io.Depth_Unknown.game.ui.menu.MenuControler;
 import io.Depth_Unknown.game.ui.pause_menu.PauseMenuControler;
@@ -10,6 +11,12 @@ public class UiManager implements GameObject {
     MenuControler menuControler;
     PauseMenuControler pauseMenuControler;
     HudControler hudControler;
+    SettingsManager settingsManager;
+
+    public UiManager(SettingsManager settingsManager) {
+        this.settingsManager = settingsManager;
+    }
+
     @Override
     public void reset() {
 
@@ -62,7 +69,7 @@ public class UiManager implements GameObject {
 
     @Override
     public void create() {
-        menuControler = new MenuControler(this);
+        menuControler = new MenuControler(this, settingsManager);
         pauseMenuControler = new PauseMenuControler();
         hudControler = new HudControler();
 

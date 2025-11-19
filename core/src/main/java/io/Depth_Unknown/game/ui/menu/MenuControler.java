@@ -12,13 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.Depth_Unknown.game.GameObject;
+import io.Depth_Unknown.game.SettingsManager;
 import io.Depth_Unknown.game.ui.UiManager;
 
 
 public class MenuControler implements GameObject {
     private Stage baseMenuStage;
     private Stage levelSelectStage;
-    private Stage settingsStage;
 
     private Stage currentStage;
 
@@ -29,9 +29,11 @@ public class MenuControler implements GameObject {
     BitmapFont buttonFont;
     ScreenViewport viewport = new ScreenViewport();
     Label fpsLabel;
+    SettingsManager settingsManager;
 
-    public MenuControler(UiManager uiManager) {
+    public MenuControler(UiManager uiManager, SettingsManager settingsManager) {
         this.uiManager = uiManager;
+        this.settingsManager = settingsManager;
     }
 
     @Override
@@ -54,7 +56,6 @@ public class MenuControler implements GameObject {
          * */
         baseMenuStage = new Stage(viewport);
         levelSelectStage = new Stage(viewport);
-        settingsStage = new Stage(viewport);
 
         /*
         * Set up button styles
@@ -114,7 +115,16 @@ public class MenuControler implements GameObject {
         settingsBtn.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("Opening Settings");
-                setStage(settingsStage);
+                settingsManager.setViewport(viewport);
+                settingsManager.setReturnCallback(new ChangeListener() {
+                    @Override
+                    public void changed (ChangeEvent event, Actor actor) {
+                        System.out.println("Home!");
+                        setStage(baseMenuStage);
+                    }
+                });
+
+                setStage(settingsManager.getStage());
             }
         });
 
@@ -179,41 +189,6 @@ public class MenuControler implements GameObject {
             }
         });
 
-        /*
-        * Settings Stage set up
-        * */
-        Table settingsGroup = new Table();
-        settingsStage.addActor(settingsGroup);
-
-        settingsGroup.center().top();
-        settingsGroup.setFillParent(true);
-        settingsGroup.pad(5);
-
-        settingsGroup.align(Align.center);
-        settingsGroup.padTop(50);
-        settingsGroup.padBottom(50);
-
-        TextButton settingsBackBtn = new TextButton("Back", style);
-        settingsBackBtn.pad(20);
-
-        settingsGroup.add(settingsBackBtn).uniformX();
-        settingsGroup.row().padBottom(paddingBetween);
-
-        Label musicVolumeLabel = new Label("Music Volume", labelStyle);
-        musicVolumeLabel.setAlignment(Align.center);
-
-        Slider musicVolumeSlider = new Slider(0.0f, 100.0f, 0.1f, false, skin);
-        musicVolumeSlider.setValue(100.0f);
-        settingsGroup.add(musicVolumeLabel).padRight(paddingBetween);
-        settingsGroup.add(musicVolumeSlider);
-        settingsGroup.row();
-
-        settingsBackBtn.addListener(new ChangeListener() {
-            public void changed (ChangeEvent event, Actor actor) {
-                setStage(baseMenuStage);
-            }
-        });
-
         setStage(baseMenuStage);
     }
 
@@ -228,7 +203,6 @@ public class MenuControler implements GameObject {
     public void destroy() {
         baseMenuStage.dispose();
         levelSelectStage.dispose();
-        settingsStage.dispose();
     }
 
     @Override
