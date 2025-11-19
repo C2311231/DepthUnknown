@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.Depth_Unknown.game.GameObject;
-import io.Depth_Unknown.game.SettingsManager;
+import io.Depth_Unknown.game.settings.SettingsManager;
 import io.Depth_Unknown.game.ui.UiManager;
 
 

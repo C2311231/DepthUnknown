@@ -1,4 +1,4 @@
-package io.Depth_Unknown.game;
+package io.Depth_Unknown.game.settings;
 
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
@@ -73,8 +73,8 @@ public class Setting<T> {
             checkBox.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    System.out.println("Changed value: " + value);
                     setValue((T) Boolean.valueOf(checkBox.isChecked()));
+                    System.out.println("Changed value: " + value);
                 }
             });
             return checkBox;
@@ -85,8 +85,8 @@ public class Setting<T> {
             slider.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    System.out.println("Changed value: " + value);
                     setValue((T) Float.valueOf(slider.getValue()));
+                    System.out.println("Changed value: " + value);
                 }
             });
             return slider;
@@ -98,8 +98,8 @@ public class Setting<T> {
             slider.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    System.out.println("Changed value: " + value);
                     setValue((T) Integer.valueOf((int) slider.getValue()));
+                    System.out.println("Changed value: " + value);
                 }
             });
             return slider;
@@ -109,8 +109,8 @@ public class Setting<T> {
             field.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    System.out.println("Changed value: " + value);
                     setValue((T) field.getText());
+                    System.out.println("Changed value: " + value);
                 }
             });
             return field;

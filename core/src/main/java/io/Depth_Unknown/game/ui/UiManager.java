@@ -1,7 +1,7 @@
 package io.Depth_Unknown.game.ui;
 
 import io.Depth_Unknown.game.GameObject;
-import io.Depth_Unknown.game.SettingsManager;
+import io.Depth_Unknown.game.settings.SettingsManager;
 import io.Depth_Unknown.game.ui.hud.HudControler;
 import io.Depth_Unknown.game.ui.menu.MenuControler;
 import io.Depth_Unknown.game.ui.pause_menu.PauseMenuControler;

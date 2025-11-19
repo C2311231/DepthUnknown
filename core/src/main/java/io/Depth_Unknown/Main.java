@@ -9,7 +9,7 @@ import io.Depth_Unknown.engine.physics.Physics;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.EntityManager;
 import io.Depth_Unknown.game.GameObject;
-import io.Depth_Unknown.game.SettingsManager;
+import io.Depth_Unknown.game.settings.SettingsManager;
 import io.Depth_Unknown.game.ui.UiManager;
 
 import java.util.ArrayList;
