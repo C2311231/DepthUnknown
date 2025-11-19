@@ -9,6 +9,7 @@ import io.Depth_Unknown.engine.physics.Physics;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.EntityManager;
 import io.Depth_Unknown.game.GameObject;
+import io.Depth_Unknown.game.SettingsManager;
 import io.Depth_Unknown.game.ui.UiManager;
 
 import java.util.ArrayList;
@@ -19,8 +20,9 @@ public class Main implements ApplicationListener {
     public EngineInputProcessor input;
     public EntityManager entityManager;
     public UiManager uiManager;
+    public SettingsManager settingsManager;
     public Preferences keybinds;
-    public Preferences gameState;
+    public Preferences gameSettings;
 
     ArrayList<GameObject> gameObjects =  new ArrayList<>(20);
 
@@ -30,13 +32,13 @@ public class Main implements ApplicationListener {
     @Override
     public void create() {
         keybinds = Gdx.app.getPreferences("Depth_Unknown_KeyBinds");
-        gameState = Gdx.app.getPreferences("Depth_Unknown_Game_State");
+        gameSettings = Gdx.app.getPreferences("Depth_Unknown_Game_Settings");
         physics = new Physics();
         renderer = new Renderer();
         input = new EngineInputProcessor(keybinds);
         entityManager = new EntityManager();
         uiManager = new UiManager();
-
+        settingsManager = new SettingsManager(gameSettings);
 
 
         gameObjects.add(entityManager);

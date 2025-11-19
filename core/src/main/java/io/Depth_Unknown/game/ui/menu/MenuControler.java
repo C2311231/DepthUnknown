@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -19,7 +16,12 @@ import io.Depth_Unknown.game.ui.UiManager;
 
 
 public class MenuControler implements GameObject {
-    private Stage stage;
+    private Stage baseMenuStage;
+    private Stage levelSelectStage;
+    private Stage settingsStage;
+
+    private Stage currentStage;
+
     private Table buttonGroup;
     UiManager uiManager;
     TextureRegion upRegion;
@@ -43,83 +45,190 @@ public class MenuControler implements GameObject {
         downRegion = skin.getRegion("default-round-down");
         buttonFont = new BitmapFont();
 
-        stage = new Stage(viewport);
-        Gdx.input.setInputProcessor(stage);
-
+        // Create an FPS label
         Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
-
         fpsLabel = new Label("FPS: 0", labelStyle);
 
-        fpsLabel.setPosition(10, Gdx.graphics.getHeight() - 20);
+        /*
+         * Create the stages
+         * */
+        baseMenuStage = new Stage(viewport);
+        levelSelectStage = new Stage(viewport);
+        settingsStage = new Stage(viewport);
 
-        stage.addActor(fpsLabel);
-
-        Table buttonGroup = new Table();
-        buttonGroup.center().top();
-        buttonGroup.setFillParent(true);
-        stage.addActor(buttonGroup);
-
-        buttonGroup.center();
-        buttonGroup.pad(5);
-
-        buttonGroup.align(Align.center);
-        buttonGroup.padTop(50);
-        buttonGroup.padBottom(50);
-
-
+        /*
+        * Set up button styles
+        * */
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.up = new TextureRegionDrawable(upRegion);
         style.down = new TextureRegionDrawable(downRegion);
         style.over = new TextureRegionDrawable(downRegion);
         style.font = buttonFont;
 
-        TextButton button1 = new TextButton("Play", style);
-        button1.pad(20);
+        /*
+        * Set up the main menu stage
+        * */
 
-        TextButton button2 = new TextButton("Levels", style);
-        button2.pad(20);
+        Table baseButtonGroup = new Table();
+        baseMenuStage.addActor(baseButtonGroup);
 
-        TextButton button3 = new TextButton("Settings", style);
-        button3.pad(20);
+        baseButtonGroup.center().top();
+        baseButtonGroup.setFillParent(true);
+        baseButtonGroup.pad(5);
 
-        TextButton button4 = new TextButton("Quit", style);
-        button4.pad(20);
+        baseButtonGroup.align(Align.center);
+        baseButtonGroup.padTop(50);
+        baseButtonGroup.padBottom(50);
+
+        // Create Buttons
+        TextButton playBtn = new TextButton("Play", style);
+        TextButton levelBtn = new TextButton("Levels", style);
+        TextButton settingsBtn = new TextButton("Settings", style);
+        TextButton quitBtn = new TextButton("Quit", style);
+
         float paddingBetween = 10f;
-        buttonGroup.add(button1).uniformX().fillX().padBottom(paddingBetween).row();
-        buttonGroup.add(button2).uniformX().fillX().padBottom(paddingBetween).row();
-        buttonGroup.add(button3).uniformX().fillX().padBottom(paddingBetween).row();
-        buttonGroup.add(button4).uniformX().fillX().row();
+        playBtn.pad(20);
+        levelBtn.pad(20);
+        settingsBtn.pad(20);
+        quitBtn.pad(20);
+
+        baseButtonGroup.add(playBtn).uniformX().fillX().padBottom(paddingBetween).row();
+        baseButtonGroup.add(levelBtn).uniformX().fillX().padBottom(paddingBetween).row();
+        baseButtonGroup.add(settingsBtn).uniformX().fillX().padBottom(paddingBetween).row();
+        baseButtonGroup.add(quitBtn).uniformX().fillX().row();
 
 
-        button1.addListener(new ChangeListener() {
+        playBtn.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("Starting Game");
+                System.out.println("Starting Game...");
             }
         });
 
-        button2.addListener(new ChangeListener() {
+        levelBtn.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("Showing Levels!");
+                setStage(levelSelectStage);
             }
         });
 
-        button3.addListener(new ChangeListener() {
+        settingsBtn.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("Opening Settings");
+                setStage(settingsStage);
             }
         });
 
-        button4.addListener(new ChangeListener() {
+        quitBtn.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
                 Gdx.app.exit();
             }
         });
 
+        /*
+         * Set up the levels stage
+         * */
+
+        Table levelsButtonGroup = new Table();
+        levelSelectStage.addActor(levelsButtonGroup);
+
+        levelsButtonGroup.center().top();
+        levelsButtonGroup.setFillParent(true);
+        levelsButtonGroup.pad(5);
+
+        levelsButtonGroup.align(Align.center);
+        levelsButtonGroup.padTop(50);
+        levelsButtonGroup.padBottom(50);
+
+        // Create Buttons
+        TextButton level1Btn = new TextButton("Level 1", style);
+        TextButton level2Btn = new TextButton("Level 2", style);
+        TextButton level3Btn = new TextButton("Level 3", style);
+        TextButton backBtn = new TextButton("Back", style);
+
+        level1Btn.pad(20);
+        level2Btn.pad(20);
+        level3Btn.pad(20);
+        backBtn.pad(20);
+
+        levelsButtonGroup.add(level1Btn).uniformX().fillX().padBottom(paddingBetween).row();
+        levelsButtonGroup.add(level2Btn).uniformX().fillX().padBottom(paddingBetween).row();
+        levelsButtonGroup.add(level3Btn).uniformX().fillX().padBottom(paddingBetween).row();
+        levelsButtonGroup.add(backBtn).uniformX().fillX().row();
+
+        level1Btn.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                System.out.println("Starting Level 1...");
+            }
+        });
+
+        level2Btn.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                System.out.println("Starting Level 2...");
+            }
+        });
+
+        level3Btn.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                System.out.println("Starting Level 3...");
+            }
+        });
+
+        backBtn.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                setStage(baseMenuStage);
+            }
+        });
+
+        /*
+        * Settings Stage set up
+        * */
+        Table settingsGroup = new Table();
+        settingsStage.addActor(settingsGroup);
+
+        settingsGroup.center().top();
+        settingsGroup.setFillParent(true);
+        settingsGroup.pad(5);
+
+        settingsGroup.align(Align.center);
+        settingsGroup.padTop(50);
+        settingsGroup.padBottom(50);
+
+        TextButton settingsBackBtn = new TextButton("Back", style);
+        settingsBackBtn.pad(20);
+
+        settingsGroup.add(settingsBackBtn).uniformX();
+        settingsGroup.row().padBottom(paddingBetween);
+
+        Label musicVolumeLabel = new Label("Music Volume", labelStyle);
+        musicVolumeLabel.setAlignment(Align.center);
+
+        Slider musicVolumeSlider = new Slider(0.0f, 100.0f, 0.1f, false, skin);
+        musicVolumeSlider.setValue(100.0f);
+        settingsGroup.add(musicVolumeLabel).padRight(paddingBetween);
+        settingsGroup.add(musicVolumeSlider);
+        settingsGroup.row();
+
+        settingsBackBtn.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                setStage(baseMenuStage);
+            }
+        });
+
+        setStage(baseMenuStage);
     }
+
+    public void setStage(Stage stage) {
+        currentStage = stage;
+        Gdx.input.setInputProcessor(currentStage);
+        currentStage.addActor(fpsLabel);
+    }
+
 
     @Override
     public void destroy() {
-        stage.dispose();
+        baseMenuStage.dispose();
+        levelSelectStage.dispose();
+        settingsStage.dispose();
     }
 
     @Override
@@ -129,17 +238,20 @@ public class MenuControler implements GameObject {
 
     @Override
     public void render(float delta) {
-        fpsLabel.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+        currentStage.draw();
     }
 
     @Override
     public void update(float delta) {
-
+        fpsLabel.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
+        currentStage.act(Gdx.graphics.getDeltaTime());
     }
 
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        fpsLabel.setPosition(10, Gdx.graphics.getHeight() - 20);
+//        baseMenuStage.getViewport().update(width, height, true);
+//        levelSelectStage.getViewport().update(width, height, true);
+//        settingsStage.getViewport().update(width, height, true);
+        currentStage.getViewport().update(width, height, true);
     }
 }
