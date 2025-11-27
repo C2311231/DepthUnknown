@@ -34,7 +34,7 @@ public class Main implements ApplicationListener {
         keybinds = Gdx.app.getPreferences("Depth_Unknown_KeyBinds");
         gameSettings = Gdx.app.getPreferences("Depth_Unknown_Game_Settings");
         physics = new Physics();
-        renderer = new Renderer();
+        renderer = new Renderer(gameObjects);
         input = new EngineInputProcessor(keybinds);
         entityManager = new EntityManager();
         settingsManager = new SettingsManager(gameSettings);

@@ -112,7 +112,7 @@ public class SettingsManager implements GameObject {
         settingsGroup.row().padBottom(15);
 
 
-        for (Setting<?> setting : settingsList) {
+        for (Setting setting : settingsList) {
             settingsGroup.add(setting.getLabel());
             settingsGroup.add(setting.getActor(skin));
             settingsGroup.row().padBottom(15);;
