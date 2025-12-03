@@ -53,6 +53,10 @@ public class Renderer {
         // ^ Will need to be later checked to see if this adds to camera rotation or simply sets it
     }
 
+    public PerspectiveCamera getCamera3d() {
+        return camera3d;
+    }
+
     public void setCamera2dPosition(float x, float y,  float z, boolean direction_x, boolean negative) {
         camera2d.position.set(x, y, z);
         if  (direction_x) {
@@ -71,9 +75,8 @@ public class Renderer {
 
         camera3d.near = 0.1f;
         camera3d.far = 1000f;
-
-        */
         currentCamera.lookAt(0, 0, 0);
+        */
         currentCamera.update();
         modelBatch.begin(currentCamera);
         for (GameObject gameObject : gameObjects) {

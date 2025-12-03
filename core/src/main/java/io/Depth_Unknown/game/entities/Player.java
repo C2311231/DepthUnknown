@@ -1,7 +1,7 @@
 package io.Depth_Unknown.game.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -12,12 +12,10 @@ import io.Depth_Unknown.engine.rendering.Renderable3d;
 import io.Depth_Unknown.engine.rendering.Renderer;
 
 public class Player extends Entity implements Renderable3d {
-    PerspectiveCamera camera;
     EngineInputProcessor inputProcessor;
     Model model;
     ModelInstance instance;
     Renderer renderer;
-    ModelInstance boxInstance;
 
     public Player(EngineInputProcessor inputProcessor, Renderer renderer) {
         this.inputProcessor = inputProcessor;
@@ -51,7 +49,31 @@ public class Player extends Entity implements Renderable3d {
         renderer.setCamera3dPosition(
             new Vector3(position).add(0, 8f, 0)
         );
-        renderer.setCamera3dRotation(rotation);
+
+        // Get mouse rotation change (easier than bundling it in input processor)
+        float dx = Gdx.input.getDeltaX();
+        float dy = Gdx.input.getDeltaY();
+        float sensitivity = 0.0025f; // TODO add this to settings
+
+        Vector3 dir = renderer.getCamera3d().direction;
+
+
+        float yaw   = (float)Math.atan2(-dir.x, -dir.z);
+        float pitch = (float)Math.asin(dir.y);
+
+        yaw += -dx * sensitivity;  // mouse left/right
+        pitch += -dy * sensitivity;  // mouse up/down
+
+        float maxPitch = (float)Math.toRadians(89);
+
+        pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+        rotation = rotation.setEulerAnglesRad(yaw, 0, 0);
+        float cosPitch = (float)Math.cos(pitch);
+
+        renderer.getCamera3d().direction.set(-(float)Math.sin(yaw) * cosPitch,
+            (float)Math.sin(pitch),
+            -(float)Math.cos(yaw) * cosPitch).setLength(1).nor();
+
         instance.transform.set(position, rotation);
     }
 }
