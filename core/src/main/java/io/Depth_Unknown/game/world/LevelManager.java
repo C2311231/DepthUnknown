@@ -24,30 +24,28 @@ public class LevelManager implements GameObject {
         this.entityManager = entityManager;
     }
 
-    public boolean beginLevel(String levelName) {
+    public void beginLevel(String levelName) {
         for (Level level : levels) {
             if (level.name.equals(levelName) ) {
                 entityManager.reset();
                 currentLevel = level;
                 currentLevel.create();
-                return true;
             }
         }
-        return false;
+        throw new RuntimeException("Level " + levelName + " not found");
     }
 
     /**
      * Starts First Level
      * */
-    public boolean beginLevel() {
+    public void beginLevel() {
         if (levels.length == 0) {
-            return false;
+            throw new RuntimeException("Levels array is empty");
         }
         Level level = levels[0];
         entityManager.reset();
         currentLevel = level;
         currentLevel.create();
-        return true;
     }
 
     @Override
