@@ -36,6 +36,20 @@ public class LevelManager implements GameObject {
         return false;
     }
 
+    /**
+     * Starts First Level
+     * */
+    public boolean beginLevel() {
+        if (levels.length == 0) {
+            return false;
+        }
+        Level level = levels[0];
+        entityManager.reset();
+        currentLevel = level;
+        currentLevel.create();
+        return true;
+    }
+
     @Override
     public void reset() {
 
