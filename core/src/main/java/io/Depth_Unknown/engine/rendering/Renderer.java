@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Quaternion;
@@ -37,10 +38,10 @@ public class Renderer {
         this.gameObjects = gameObjects;
 
         // Configure soft global light
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.7f, 0.7f, 0.7f, 1f));
+        environment.add(new DirectionalLight().set(0.5f, 0.5f, 0.5f, -1f, -0.8f, -0.2f));
         ModelBuilder mb = new ModelBuilder();
-        Model box = mb.createBox(2, 2, 2, new Material(ColorAttribute.createDiffuse(Color.GREEN)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        Model box = mb.createBox(2, 2, 2, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         boxInstance = new ModelInstance(box); boxInstance.transform.setToTranslation(0, 0, -5); // IN FRONT OF CAMERA
     }
 
@@ -84,7 +85,7 @@ public class Renderer {
                 ((Renderable3d) gameObject).render3d(modelBatch, environment);
             }
         }
-      //  modelBatch.render(boxInstance, environment); // Used for debugging
+        modelBatch.render(boxInstance, environment); // Used for debugging
         modelBatch.end();
         spriteBatch.setProjectionMatrix(currentCamera.combined);
         spriteBatch.begin();

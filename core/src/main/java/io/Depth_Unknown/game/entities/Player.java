@@ -23,15 +23,17 @@ public class Player extends Entity implements Renderable3d {
         this.renderer = renderer;
         ModelBuilder modelBuilder = new ModelBuilder();
         // Temp model
-        model = modelBuilder.createCapsule(2f, 5f, 15,
+        model = modelBuilder.createCapsule(0.2f, 1f, 15,
             new Material(ColorAttribute.createDiffuse(Color.GREEN)),
             VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         instance = new ModelInstance(model);
 
-        inputProcessor.registerControl("Forward", Input.Keys.W, () -> velocity.add(1,0,0), () -> velocity.add(-1,0,0));
-        inputProcessor.registerControl("Backward", Input.Keys.S, () -> velocity.add(-1,0,0), () -> velocity.add(1,0,0));
-        inputProcessor.registerControl("Left", Input.Keys.A, () -> velocity.add(0,1,0), () -> velocity.add(0,-1,0));
-        inputProcessor.registerControl("Forward", Input.Keys.D, () -> velocity.add(0,-1,0), () -> velocity.add(0,1,0));
+        float playerSpeed = 3f; // TODO add to setting latter
+
+        inputProcessor.registerControl("Forward", Input.Keys.W, () -> velocity.add(0,0,-1*playerSpeed), () -> velocity.add(0,0,1*playerSpeed));
+        inputProcessor.registerControl("Backward", Input.Keys.S, () -> velocity.add(0,0,1*playerSpeed), () -> velocity.add(0,0,-1*playerSpeed));
+        inputProcessor.registerControl("Left", Input.Keys.A, () -> velocity.add(-1*playerSpeed,0,0), () -> velocity.add(1*playerSpeed,0,0));
+        inputProcessor.registerControl("Right", Input.Keys.D, () -> velocity.add(1*playerSpeed,0,0), () -> velocity.add(-1*playerSpeed,0,0));
     }
 
     /**
@@ -53,7 +55,7 @@ public class Player extends Entity implements Renderable3d {
     public void update(float delta) {
         super.update(delta);
         renderer.setCamera3dPosition(
-            new Vector3(position).add(0, 8f, 0)
+            new Vector3(position).add(0, 0.5f, 0)
         );
 
         // Get mouse rotation change (easier than bundling it in input processor)

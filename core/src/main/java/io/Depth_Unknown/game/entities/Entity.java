@@ -28,6 +28,7 @@ public abstract class Entity implements GameObject {
     public void update(float delta) {
         Vector3 globalVelocity = new Vector3(velocity.x, velocity.y, velocity.z);
         rotation.transform(globalVelocity);
+        //System.out.println(globalVelocity);
         globalVelocity.nor();
 
         // Linear

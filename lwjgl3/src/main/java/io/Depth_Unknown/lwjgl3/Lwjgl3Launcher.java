@@ -40,7 +40,15 @@ public class Lwjgl3Launcher {
         //// You can choose to remove the following line and the mentioned dependency if you want; they
         //// are not intended for games that use GL30 (which is compatibility with OpenGL ES 3.0).
         // configuration.setOpenGLEmulation(Lwjgl3ApplicationConfiguration.GLEmulation.ANGLE_GLES20, 0, 0);
-
+        configuration.setBackBufferConfig(
+            8,  // red bits
+            8,  // green bits
+            8,  // blue bits
+            8,  // alpha bits
+            16, // depth bits
+            8,  // stencil bits
+            4   // samples for MSAA
+        );
         return configuration;
     }
 }

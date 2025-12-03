@@ -1,14 +1,17 @@
 package io.Depth_Unknown.game.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import io.Depth_Unknown.engine.input.EngineInputProcessor;
+import io.Depth_Unknown.engine.rendering.Renderable3d;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.EntityManager;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.game.entities.Player;
 import io.Depth_Unknown.levels.level1.scripts.level1;
 
-public class LevelManager implements GameObject {
+public class LevelManager implements GameObject, Renderable3d {
 
     public Level[] levels;
     public Level currentLevel;
@@ -87,5 +90,16 @@ public class LevelManager implements GameObject {
     @Override
     public void render(float deltaTime) {
 
+    }
+
+    /**
+     * @param modelBatch
+     * @param environment
+     */
+    @Override
+    public void render3d(ModelBatch modelBatch, Environment environment) {
+        if (currentLevel != null) {
+            currentLevel.render3d(modelBatch, environment);
+        }
     }
 }

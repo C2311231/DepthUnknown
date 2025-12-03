@@ -1,0 +1,7 @@
+---
+vertices: 14
+indices: 36
+materials:
+	- Material
+armatures:
+animations:
