@@ -14,13 +14,16 @@ public class HudControler implements GameObject {
 
     }
 
+    /**
+     * @param deltaTime
+     */
     @Override
-    public void reset() {
+    public void render(float deltaTime) {
 
     }
 
     @Override
-    public void render(float delta) {
+    public void reset() {
 
     }
 

@@ -19,9 +19,12 @@ public abstract class Entity implements GameObject {
     public void reset() {
 
     }
+
+    @Override
     public void render(float delta) {
 
     }
+
     public void update(float delta) {
         // Linear
         velocity.mulAdd(acceleration, delta);

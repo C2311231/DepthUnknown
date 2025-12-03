@@ -17,6 +17,7 @@ public class Player extends Entity implements Renderable3d {
     Model model;
     ModelInstance instance;
     Renderer renderer;
+    ModelInstance boxInstance;
 
     public Player(EngineInputProcessor inputProcessor, Renderer renderer) {
         this.inputProcessor = inputProcessor;
@@ -47,9 +48,10 @@ public class Player extends Entity implements Renderable3d {
     @Override
     public void update(float delta) {
         super.update(delta);
-        renderer.setCamera3dPosition(position.add(new Vector3(0,2.5f,0)));
+        renderer.setCamera3dPosition(
+            new Vector3(position).add(0, 8f, 0)
+        );
         renderer.setCamera3dRotation(rotation);
-        instance.transform.setTranslation(position);
-        instance.transform.rotate(rotation);
+        instance.transform.set(position, rotation);
     }
 }

@@ -14,12 +14,13 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.game.settings.SettingsManager;
 import io.Depth_Unknown.game.ui.UiManager;
+import io.Depth_Unknown.game.world.Level;
+import io.Depth_Unknown.game.world.LevelManager;
 
 
-public class MenuControler implements GameObject {
+public class MenuController implements GameObject {
     private Stage baseMenuStage;
     private Stage levelSelectStage;
-
     private Stage currentStage;
 
     private Table buttonGroup;
@@ -30,10 +31,12 @@ public class MenuControler implements GameObject {
     ScreenViewport viewport = new ScreenViewport();
     Label fpsLabel;
     SettingsManager settingsManager;
+    LevelManager levelManager;
 
-    public MenuControler(UiManager uiManager, SettingsManager settingsManager) {
+    public MenuController(UiManager uiManager, SettingsManager settingsManager, LevelManager levelManager) {
         this.uiManager = uiManager;
         this.settingsManager = settingsManager;
+        this.levelManager = levelManager;
     }
 
     @Override
@@ -150,38 +153,22 @@ public class MenuControler implements GameObject {
         levelsButtonGroup.padBottom(50);
 
         // Create Buttons
-        TextButton level1Btn = new TextButton("Level 1", style);
-        TextButton level2Btn = new TextButton("Level 2", style);
-        TextButton level3Btn = new TextButton("Level 3", style);
+
+        for (Level level: levelManager.levels) {
+            TextButton levelSelectBtn = new TextButton(level.name, style);
+            levelSelectBtn.pad(20);
+            levelsButtonGroup.add(levelSelectBtn).uniformX().fillX().padBottom(paddingBetween).row();
+            levelSelectBtn.addListener(new ChangeListener() {
+                public void changed (ChangeEvent event, Actor actor) {
+                    System.out.println("Starting " + level.name);
+                    levelManager.beginLevel(level.name);
+                    uiManager.setMode(1);
+                }
+            });
+        }
         TextButton backBtn = new TextButton("Back", style);
-
-        level1Btn.pad(20);
-        level2Btn.pad(20);
-        level3Btn.pad(20);
         backBtn.pad(20);
-
-        levelsButtonGroup.add(level1Btn).uniformX().fillX().padBottom(paddingBetween).row();
-        levelsButtonGroup.add(level2Btn).uniformX().fillX().padBottom(paddingBetween).row();
-        levelsButtonGroup.add(level3Btn).uniformX().fillX().padBottom(paddingBetween).row();
         levelsButtonGroup.add(backBtn).uniformX().fillX().row();
-
-        level1Btn.addListener(new ChangeListener() {
-            public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("Starting Level 1...");
-            }
-        });
-
-        level2Btn.addListener(new ChangeListener() {
-            public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("Starting Level 2...");
-            }
-        });
-
-        level3Btn.addListener(new ChangeListener() {
-            public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("Starting Level 3...");
-            }
-        });
 
         backBtn.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
