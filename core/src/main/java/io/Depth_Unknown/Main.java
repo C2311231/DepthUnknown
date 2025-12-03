@@ -63,6 +63,7 @@ public class Main implements ApplicationListener {
     @Override
     public void resize(int width, int height) {
         uiManager.resize(width, height);
+        renderer.resize(width, height);
     }
 
     /**

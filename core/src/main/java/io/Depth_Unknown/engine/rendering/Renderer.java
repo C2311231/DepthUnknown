@@ -95,4 +95,11 @@ public class Renderer {
         // TODO
         // Work in HUD rendering later.
     }
+
+    public void resize(int width, int height) {
+        camera2d.viewportWidth = width;
+        camera2d.viewportHeight = height;
+        camera3d.viewportWidth = width;
+        camera3d.viewportHeight = height;
+    }
 }
