@@ -1,14 +1,12 @@
 package io.Depth_Unknown.game.world;
 
+import com.badlogic.gdx.Gdx;
 import io.Depth_Unknown.engine.input.EngineInputProcessor;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.EntityManager;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.game.entities.Player;
 import io.Depth_Unknown.levels.level1.scripts.level1;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class LevelManager implements GameObject {
 
@@ -28,9 +26,12 @@ public class LevelManager implements GameObject {
     public void beginLevel(String levelName) throws RuntimeException {
         for (Level level : levels) {
             if (level.name.equals(levelName) ) {
+                Gdx.input.setCursorCatched(true);
                 entityManager.reset();
                 currentLevel = level;
                 currentLevel.create();
+                Gdx.input.setInputProcessor(inputProcessor);
+                return;
             }
         }
         throw new RuntimeException("Level " + levelName + " not found");
@@ -42,11 +43,14 @@ public class LevelManager implements GameObject {
     public void beginLevel() throws RuntimeException{
         if (levels.length == 0) {
             throw new RuntimeException("Levels array is empty");
+
         }
+        Gdx.input.setCursorCatched(true);
         Level level = levels[0];
         entityManager.reset();
         currentLevel = level;
         currentLevel.create();
+        Gdx.input.setInputProcessor(inputProcessor);
     }
 
     @Override

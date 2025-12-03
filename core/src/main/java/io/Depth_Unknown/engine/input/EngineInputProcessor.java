@@ -18,12 +18,11 @@ public class EngineInputProcessor implements InputProcessor, ControllerListener 
 
     @Override
     public boolean keyDown(int keycode) {
+//        System.out.println("Key Down: " + keycode);
         for (KeyEvent keyEvent : keyEvents) {
             if (keyEvent.isEnabled() && keyEvent.getKeyCode() == keycode) {
-                if (keyEvent.getState() == KeyState.DOWN ||  keyEvent.getState() == KeyState.BOTH) {
-                    keyEvent.trigger();
-                    return true;
-                }
+                keyEvent.down();
+                return true;
             }
         }
         return false;
@@ -33,10 +32,8 @@ public class EngineInputProcessor implements InputProcessor, ControllerListener 
     public boolean keyUp(int keycode) {
         for (KeyEvent keyEvent : keyEvents) {
             if (keyEvent.isEnabled() && keyEvent.getKeyCode() == keycode) {
-                if (keyEvent.getState() == KeyState.UP ||  keyEvent.getState() == KeyState.BOTH) {
-                    keyEvent.trigger();
-                    return  true;
-                }
+                keyEvent.up();
+                return true;
             }
         }
         return false;
@@ -87,13 +84,13 @@ public class EngineInputProcessor implements InputProcessor, ControllerListener 
      *
      * @param name Name of control
      * @param keyCode Default keycode for control
-     * @param state KeyState event to trigger (DOWN, UP, or BOTH)
-     * @param runnable Callback function for when the event is triggered
+     * @param runnableDown Callback function for when the key is down
+     * @param runnableUp Callback function for when the key is up
      */
-    public void registerControl(String name, int keyCode, KeyState state, Runnable runnable) {
+    public void registerControl(String name, int keyCode, Runnable runnableDown, Runnable runnableUp) {
         keyCode = keybinds.getInteger(name, keyCode);
         keybinds.putInteger(name, keyCode);
-        this.keyEvents.add(new KeyEvent(name, keyCode, state, runnable));
+        this.keyEvents.add(new KeyEvent(name, keyCode, runnableDown, runnableUp));
     }
 
     /**
@@ -101,13 +98,13 @@ public class EngineInputProcessor implements InputProcessor, ControllerListener 
      *
      * @param name Name of control
      * @param keyCode Default keycode for control
-     * @param state KeyState event to trigger (DOWN, UP, or BOTH)
-     * @param runnable Callback function for when the event is triggered
+     * @param runnableDown Callback function for when the key is down
+     * @param runnableUp Callback function for when the key is up
      */
-    public void loadControl(String name, int keyCode, KeyState state, Runnable runnable) {
+    public void loadControl(String name, int keyCode, Runnable runnableDown, Runnable runnableUp) {
         keyCode = keybinds.getInteger(name, keyCode);
         keybinds.putInteger(name, keyCode);
-        this.keyEvents.add(new KeyEvent(name, keyCode, state, false, runnable));
+        this.keyEvents.add(new KeyEvent(name, keyCode, false, runnableDown, runnableUp));
     }
 
     /**

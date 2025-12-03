@@ -26,9 +26,13 @@ public abstract class Entity implements GameObject {
     }
 
     public void update(float delta) {
+        Vector3 globalVelocity = new Vector3(velocity.x, velocity.y, velocity.z);
+        rotation.transform(globalVelocity);
+        globalVelocity.nor();
+
         // Linear
         velocity.mulAdd(acceleration, delta);
-        position.mulAdd(velocity, delta);
+        position.mulAdd(globalVelocity, delta);
 
         // Angular
         angularVelocity.mulAdd(angularAcceleration, delta);

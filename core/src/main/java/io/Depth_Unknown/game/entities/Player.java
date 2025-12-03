@@ -1,6 +1,7 @@
 package io.Depth_Unknown.game.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
@@ -26,6 +27,11 @@ public class Player extends Entity implements Renderable3d {
             new Material(ColorAttribute.createDiffuse(Color.GREEN)),
             VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         instance = new ModelInstance(model);
+
+        inputProcessor.registerControl("Forward", Input.Keys.W, () -> velocity.add(1,0,0), () -> velocity.add(-1,0,0));
+        inputProcessor.registerControl("Backward", Input.Keys.S, () -> velocity.add(-1,0,0), () -> velocity.add(1,0,0));
+        inputProcessor.registerControl("Left", Input.Keys.A, () -> velocity.add(0,1,0), () -> velocity.add(0,-1,0));
+        inputProcessor.registerControl("Forward", Input.Keys.D, () -> velocity.add(0,-1,0), () -> velocity.add(0,1,0));
     }
 
     /**

@@ -1,37 +1,49 @@
 package io.Depth_Unknown.engine.input;
 
 public class KeyEvent {
-    private Runnable runnable;
+    private Runnable runnableDown;
+    private Runnable runnableUp;
     private String name;
     private int keyCode;
-    private KeyState state;
     private boolean enabled = true;
 
-    public KeyEvent(String name, int keyCode, KeyState state, Runnable runnable) {
-        this.runnable = runnable;
+    public KeyEvent(String name, int keyCode, Runnable runnableDown, Runnable runnableUp) {
+        this.runnableDown = runnableDown;
+        this.runnableUp = runnableUp;
         this.name = name;
         this.keyCode = keyCode;
-        this.state = state;
     }
 
-    public KeyEvent(String name, int keyCode, KeyState state, boolean enabled, Runnable runnable) {
-        this.runnable = runnable;
+    public KeyEvent(String name, int keyCode, boolean enabled, Runnable runnableDown, Runnable runnableUp) {
+        this.runnableDown = runnableDown;
+        this.runnableUp = runnableUp;
         this.name = name;
         this.keyCode = keyCode;
-        this.state = state;
         this.enabled = enabled;
     }
 
-    public void trigger() {
-        runnable.run();
+    public void down() {
+        this.runnableDown.run();
     }
 
-    public Runnable getRunnable() {
-        return runnable;
+    public void up() {
+        this.runnableUp.run();
     }
 
-    public void setRunnable(Runnable runnable) {
-        this.runnable = runnable;
+    public Runnable getRunnableUp() {
+        return runnableUp;
+    }
+
+    public Runnable getRunnableDown() {
+        return runnableDown;
+    }
+
+    public void setRunnableUp(Runnable runnableUp) {
+        this.runnableUp = runnableUp;
+    }
+
+    public void setRunnableDown(Runnable runnableDown) {
+        this.runnableUp = runnableUp;
     }
 
     public String getName() {
@@ -48,14 +60,6 @@ public class KeyEvent {
 
     public void setKeyCode(int keyCode) {
         this.keyCode = keyCode;
-    }
-
-    public KeyState getState() {
-        return state;
-    }
-
-    public void setState(KeyState state) {
-        this.state = state;
     }
 
     public boolean isEnabled() {
