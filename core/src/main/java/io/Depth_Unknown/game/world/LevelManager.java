@@ -7,6 +7,7 @@ import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.game.entities.Player;
 import io.Depth_Unknown.levels.level1.scripts.level1;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class LevelManager implements GameObject {
@@ -24,30 +25,28 @@ public class LevelManager implements GameObject {
         this.entityManager = entityManager;
     }
 
-    public boolean beginLevel(String levelName) {
+    public void beginLevel(String levelName) throws RuntimeException {
         for (Level level : levels) {
             if (level.name.equals(levelName) ) {
                 entityManager.reset();
                 currentLevel = level;
                 currentLevel.create();
-                return true;
             }
         }
-        return false;
+        throw new RuntimeException("Level " + levelName + " not found");
     }
 
     /**
      * Starts First Level
      * */
-    public boolean beginLevel() {
+    public void beginLevel() throws RuntimeException{
         if (levels.length == 0) {
-            return false;
+            throw new RuntimeException("Levels array is empty");
         }
         Level level = levels[0];
         entityManager.reset();
         currentLevel = level;
         currentLevel.create();
-        return true;
     }
 
     @Override
