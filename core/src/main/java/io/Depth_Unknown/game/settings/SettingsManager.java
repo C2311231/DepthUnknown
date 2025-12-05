@@ -29,52 +29,7 @@ public class SettingsManager implements GameObject {
         settingsList = new ArrayList<>();
         this.settings = settings;
         settingsStage = new Stage();
-    }
 
-    /**
-     *
-     */
-    @Override
-    public void reset() {
-
-    }
-
-    public void setViewport(ScreenViewport viewport) {
-        this.settingsStage.setViewport(viewport);
-    }
-
-    public Stage getStage() {
-        return settingsStage;
-    }
-
-    public void setReturnCallback(ChangeListener listener) {
-        if (lastListener != null) {
-            settingsBackBtn.removeListener(lastListener);
-        }
-        settingsBackBtn.addListener(listener);
-    }
-
-    /**
-     * @param delta
-     */
-    @Override
-    public void render(float delta) {
-
-    }
-
-    /**
-     * @param delta
-     */
-    @Override
-    public void update(float delta) {
-
-    }
-
-    /**
-     *
-     */
-    @Override
-    public void create() {
         /*
          * Replace these with custom assets latter
          * */
@@ -123,6 +78,53 @@ public class SettingsManager implements GameObject {
      *
      */
     @Override
+    public void reset() {
+
+    }
+
+    public void setViewport(ScreenViewport viewport) {
+        this.settingsStage.setViewport(viewport);
+    }
+
+    public Stage getStage() {
+        return settingsStage;
+    }
+
+    public void setReturnCallback(ChangeListener listener) {
+        if (lastListener != null) {
+            settingsBackBtn.removeListener(lastListener);
+        }
+        settingsBackBtn.addListener(listener);
+    }
+
+    /**
+     * @param delta
+     */
+    @Override
+    public void render(float delta) {
+
+    }
+
+    /**
+     * @param delta
+     */
+    @Override
+    public void update(float delta) {
+
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void create() {
+
+    }
+
+    /**
+     *
+     */
+    @Override
     public void destroy() {
 
     }
@@ -136,5 +138,14 @@ public class SettingsManager implements GameObject {
         settingsGroup.add(temp.getActor(skin)).align(Align.right);
         settingsGroup.row().padBottom(15);
         return temp;
+    }
+
+    public Setting<?> getSetting(String key) {
+        for (Setting<?> setting : settingsList) {
+            if (setting.key.equals(key)) {
+                return setting;
+            }
+        }
+        return null;
     }
 }

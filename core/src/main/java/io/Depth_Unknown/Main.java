@@ -39,7 +39,7 @@ public class Main implements ApplicationListener {
         input = new EngineInputProcessor(keybinds);
         entityManager = new EntityManager();
         settingsManager = new SettingsManager(gameSettings);
-        LevelManager levelManager = new LevelManager(renderer, input, entityManager);
+        LevelManager levelManager = new LevelManager(renderer, settingsManager, input, entityManager);
         uiManager = new UiManager(settingsManager, levelManager, renderer);
         gameObjects.add(levelManager);
         gameObjects.add(entityManager);

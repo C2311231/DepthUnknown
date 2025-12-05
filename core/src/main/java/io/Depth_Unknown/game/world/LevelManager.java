@@ -9,10 +9,11 @@ import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.EntityManager;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.game.entities.Player;
+import io.Depth_Unknown.game.settings.SettingsManager;
 import io.Depth_Unknown.levels.level1.scripts.level1;
 
 public class LevelManager implements GameObject, Renderable3d {
-
+    public SettingsManager settingsManager;
     public Level[] levels;
     public Level currentLevel;
     private Renderer renderer;
@@ -20,10 +21,11 @@ public class LevelManager implements GameObject, Renderable3d {
     public Player player;
     private EntityManager entityManager;
 
-    public LevelManager(Renderer renderer, EngineInputProcessor inputProcessor, EntityManager entityManager) {
+    public LevelManager(Renderer renderer, SettingsManager settingsManager, EngineInputProcessor inputProcessor, EntityManager entityManager) {
         this.renderer = renderer;
         this.inputProcessor = inputProcessor;
         this.entityManager = entityManager;
+        this.settingsManager = settingsManager;
     }
 
     public void beginLevel(String levelName) throws RuntimeException {
@@ -70,7 +72,7 @@ public class LevelManager implements GameObject, Renderable3d {
 
     @Override
     public void create() {
-        player = new Player(inputProcessor, renderer);
+        player = new Player(inputProcessor, renderer, settingsManager);
         levels = new Level[]{
             new Level("Level 1", player, new level1()),
 

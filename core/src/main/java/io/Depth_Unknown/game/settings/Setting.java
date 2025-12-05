@@ -12,9 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
  * Created with assistance from ChatGpt
  * */
 public class Setting<T> {
-    private final String key;
-    private T value;
-    private final T defaultValue;
+    public final String key;
+    public T value;
+    public final T defaultValue;
     Preferences settings;
 
     public Setting(String key, T defaultValue, Preferences settings) {
