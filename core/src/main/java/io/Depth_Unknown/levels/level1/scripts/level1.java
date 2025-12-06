@@ -9,7 +9,8 @@ public class level1 extends LevelScript {
      */
     @Override
     public Vector3 getPlayerSpawnPosition() {
-        return new Vector3(0,0.85f,0);
+        //return new Vector3(0,0.85f,0);
+        return new Vector3(0,70f,0);
     }
 
     /**

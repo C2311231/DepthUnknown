@@ -1,8 +1,7 @@
 package io.Depth_Unknown.game.world;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.engine.rendering.Renderable3d;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.game.entities.Player;
@@ -12,13 +11,15 @@ public class Level implements GameObject, Renderable3d {
     public String name;
     public LevelScript script;
     public Player player;
-    public ModelInstance modelInstance;
+    LevelModel lvModel;
+    PhysicsEngine physicsEngine;
 
-    public Level(String name, Player player, LevelScript script) {
+    public Level(String name, Player player, LevelScript script, PhysicsEngine physicsEngine) {
         this.name = name;
         this.script = script;
         this.player = player;
-        modelInstance = LevelLoader.loadLevelModel(script);
+        this.physicsEngine = physicsEngine;
+        this.lvModel = new LevelModel(LevelLoader.loadLevelModel(script), physicsEngine);
     }
 
     @Override
@@ -29,12 +30,13 @@ public class Level implements GameObject, Renderable3d {
     @Override
     public void update(float delta) {
         script.update(delta);
+        lvModel.update(delta);
     }
 
     @Override
     public void create() {
         // Starts the level
-        player.position = script.getPlayerSpawnPosition();
+        player.setPosition(script.getPlayerSpawnPosition());
 
     }
 
@@ -56,7 +58,7 @@ public class Level implements GameObject, Renderable3d {
      * @param environment
      */
     @Override
-    public void render3d(ModelBatch modelBatch, Environment environment) {
-        modelBatch.render(modelInstance, environment);
+    public void render3d(ModelBatch modelBatch, Environment environment){
+        lvModel.render3d(modelBatch, environment);
     }
 }

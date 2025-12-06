@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import io.Depth_Unknown.engine.input.EngineInputProcessor;
+import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.engine.rendering.Renderable3d;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.EntityManager;
@@ -20,12 +21,14 @@ public class LevelManager implements GameObject, Renderable3d {
     private EngineInputProcessor inputProcessor;
     public Player player;
     private EntityManager entityManager;
+    private PhysicsEngine physicsEngine;
 
-    public LevelManager(Renderer renderer, SettingsManager settingsManager, EngineInputProcessor inputProcessor, EntityManager entityManager) {
+    public LevelManager(Renderer renderer, SettingsManager settingsManager, EngineInputProcessor inputProcessor, EntityManager entityManager, PhysicsEngine physicsEngine) {
         this.renderer = renderer;
         this.inputProcessor = inputProcessor;
         this.entityManager = entityManager;
         this.settingsManager = settingsManager;
+        this.physicsEngine = physicsEngine;
     }
 
     public void beginLevel(String levelName) throws RuntimeException {
@@ -72,9 +75,9 @@ public class LevelManager implements GameObject, Renderable3d {
 
     @Override
     public void create() {
-        player = new Player(inputProcessor, renderer, settingsManager);
+        player = new Player(inputProcessor, physicsEngine, renderer, settingsManager);
         levels = new Level[]{
-            new Level("Level 1", player, new level1()),
+            new Level("Level 1", player, new level1(), physicsEngine),
 
         };
         entityManager.addEntity(player);

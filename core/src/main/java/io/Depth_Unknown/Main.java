@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.GL20;
 import io.Depth_Unknown.engine.input.EngineInputProcessor;
-import io.Depth_Unknown.engine.physics.Physics;
+import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.EntityManager;
 import io.Depth_Unknown.game.GameObject;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class Main implements ApplicationListener {
     public Renderer renderer;
-    public Physics physics;
+    public PhysicsEngine physics;
     public EngineInputProcessor input;
     public EntityManager entityManager;
     public UiManager uiManager;
@@ -34,14 +34,15 @@ public class Main implements ApplicationListener {
     public void create() {
         keybinds = Gdx.app.getPreferences("Depth_Unknown_KeyBinds");
         gameSettings = Gdx.app.getPreferences("Depth_Unknown_Game_Settings");
-        physics = new Physics();
-        renderer = new Renderer(gameObjects);
+        physics = new PhysicsEngine();
+        renderer = new Renderer(gameObjects, physics);
         input = new EngineInputProcessor(keybinds);
         entityManager = new EntityManager();
         settingsManager = new SettingsManager(gameSettings);
-        LevelManager levelManager = new LevelManager(renderer, settingsManager, input, entityManager);
+        LevelManager levelManager = new LevelManager(renderer, settingsManager, input, entityManager, physics);
         uiManager = new UiManager(settingsManager, levelManager, renderer);
         gameObjects.add(levelManager);
+        gameObjects.add(physics);
         gameObjects.add(entityManager);
         gameObjects.add(settingsManager);
         gameObjects.add(uiManager); //Must be created after level manager

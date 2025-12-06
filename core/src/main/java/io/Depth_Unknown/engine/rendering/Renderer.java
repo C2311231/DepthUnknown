@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.DebugDrawer;
+import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.game.GameObject;
 
 import java.util.ArrayList;
@@ -23,8 +25,11 @@ public class Renderer {
     Environment environment;
     ArrayList<GameObject> gameObjects;
     ModelInstance boxInstance;
+    private DebugDrawer debugDrawer;
+    private PhysicsEngine physicsEngine;
+    private boolean debug = false;
 
-    public Renderer(ArrayList<GameObject> gameObjects) {
+    public Renderer(ArrayList<GameObject> gameObjects, PhysicsEngine physicsEngine) {
         camera3d = new PerspectiveCamera(67f,
             Gdx.graphics.getWidth(),
             Gdx.graphics.getHeight());
@@ -36,6 +41,7 @@ public class Renderer {
         modelBatch = new ModelBatch();
         spriteBatch = new SpriteBatch();
         this.gameObjects = gameObjects;
+        this.physicsEngine = physicsEngine;
 
         // Configure soft global light
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.7f, 0.7f, 0.7f, 1f));
@@ -43,6 +49,13 @@ public class Renderer {
         ModelBuilder mb = new ModelBuilder();
         Model box = mb.createBox(2, 2, 2, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         boxInstance = new ModelInstance(box); boxInstance.transform.setToTranslation(0, 0, -5); // IN FRONT OF CAMERA
+
+
+        debugDrawer = new DebugDrawer();
+        physicsEngine.world.setDebugDrawer(debugDrawer);
+        debugDrawer.setDebugMode(
+            DebugDrawer.DebugDrawModes.DBG_DrawWireframe |
+                DebugDrawer.DebugDrawModes.DBG_DrawConstraints);
     }
 
     public void setCamera3dPosition(Vector3 position) {
@@ -96,8 +109,13 @@ public class Renderer {
         }
         spriteBatch.end();
 
-        // TODO
-        // Work in HUD rendering later.
+        // TODO: Work in HUD rendering later.
+
+        if (debug) {
+            debugDrawer.begin(camera3d);
+            physicsEngine.world.debugDrawWorld();
+            debugDrawer.end();
+        }
     }
 
     public void resize(int width, int height) {
