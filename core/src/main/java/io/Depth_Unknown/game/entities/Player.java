@@ -189,7 +189,14 @@ public class Player extends Entity implements Renderable3d {
         Vector3 newVel = currentVel.lerp(desiredVel, Math.min(1f, acceleration * delta));
 
         // Apply
-        physicsBody.setLinearVelocity(newVel);
+        Vector3 from = physicsBody.getWorldTransform().getTranslation(new Vector3());
+        Vector3 to = physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0,-0.8f,0);
+
+        // Check if on ground (or close enough)
+        if (physicsEngine.rayCast(from, to, new ClosestRayResultCallback(from, to))) {
+            physicsBody.setLinearVelocity(newVel);
+        }
+
     }
 
 
