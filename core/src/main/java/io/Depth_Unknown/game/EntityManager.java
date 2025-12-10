@@ -38,11 +38,6 @@ public class EntityManager implements GameObject, Renderable3d, Renderable2d, Re
     }
 
     @Override
-    public void create() {
-
-    }
-
-    @Override
     public void destroy() {
 
     }

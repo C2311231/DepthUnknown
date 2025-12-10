@@ -117,14 +117,6 @@ public class SettingsManager implements GameObject {
      *
      */
     @Override
-    public void create() {
-
-    }
-
-    /**
-     *
-     */
-    @Override
     public void destroy() {
 
     }

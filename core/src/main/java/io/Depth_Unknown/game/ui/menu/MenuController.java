@@ -32,14 +32,11 @@ public class MenuController implements GameObject {
         this.uiManager = uiManager;
         this.settingsManager = settingsManager;
         this.levelManager = levelManager;
-    }
 
-    @Override
-    public void create() {
 
         /*
-        * Replace these with custom assets latter
-        * */
+         * Replace these with custom assets latter
+         * */
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         TextureRegion upRegion = skin.getRegion("default-round");
         TextureRegion downRegion = skin.getRegion("default-round-down");
@@ -56,8 +53,8 @@ public class MenuController implements GameObject {
         levelSelectStage = new Stage(viewport);
 
         /*
-        * Set up button styles
-        * */
+         * Set up button styles
+         * */
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.up = new TextureRegionDrawable(upRegion);
         style.down = new TextureRegionDrawable(downRegion);
@@ -65,8 +62,8 @@ public class MenuController implements GameObject {
         style.font = buttonFont;
 
         /*
-        * Set up the main menu stage
-        * */
+         * Set up the main menu stage
+         * */
 
         Table baseButtonGroup = new Table();
         baseMenuStage.addActor(baseButtonGroup);

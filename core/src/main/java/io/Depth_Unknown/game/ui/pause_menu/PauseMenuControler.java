@@ -20,11 +20,6 @@ public class PauseMenuControler implements GameObject {
     }
 
     @Override
-    public void create() {
-
-    }
-
-    @Override
     public void destroy() {
 
     }

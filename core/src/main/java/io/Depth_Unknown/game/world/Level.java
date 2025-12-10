@@ -41,7 +41,6 @@ public class Level implements GameObject, Renderable3d {
         lvModel.update(delta);
     }
 
-    @Override
     public void create() {
         // Starts the level
         player.setPosition(script.getPlayerSpawnPosition());

@@ -15,9 +15,7 @@ public abstract class Entity extends PhysicsObject implements GameObject {
 
     public void update(float delta) {
     }
-    public void create() {
 
-    }
     public void destroy() {
 
     }

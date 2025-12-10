@@ -25,11 +25,6 @@ public abstract class LevelScript implements GameObject {
     }
 
     @Override
-    public void create() {
-
-    }
-
-    @Override
     public void destroy() {
 
     }

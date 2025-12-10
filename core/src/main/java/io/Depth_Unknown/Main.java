@@ -51,11 +51,6 @@ public class Main implements ApplicationListener {
         for (GameObject gameObject : gameObjects) {
             gameObject.create();
         }
-
-        settingsManager.registerSetting("Test String", "Hello World!");
-        settingsManager.registerSetting("Test Int", 15);
-        settingsManager.registerSetting("Test Float", 15.2f);
-        settingsManager.registerSetting("Test Bool", false);
     }
 
     /**

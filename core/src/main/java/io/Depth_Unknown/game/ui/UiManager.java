@@ -21,6 +21,14 @@ public class UiManager implements GameObject {
         this.settingsManager = settingsManager;
         this.levelManager = levelManager;
         this.renderer = renderer;
+
+        menuController = new MenuController(this, settingsManager, levelManager);
+        pauseMenuControler = new PauseMenuControler();
+        hudControler = new HudControler();
+
+        menuController.create();
+        pauseMenuControler.create();
+        hudControler.create();
     }
 
     @Override
@@ -72,17 +80,6 @@ public class UiManager implements GameObject {
                 pauseMenuControler.resize(width, height);
                 break;
         }
-    }
-
-    @Override
-    public void create() {
-        menuController = new MenuController(this, settingsManager, levelManager);
-        pauseMenuControler = new PauseMenuControler();
-        hudControler = new HudControler();
-
-        menuController.create();
-        pauseMenuControler.create();
-        hudControler.create();
     }
 
     @Override

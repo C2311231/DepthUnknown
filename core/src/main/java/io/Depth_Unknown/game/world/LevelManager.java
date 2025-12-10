@@ -37,6 +37,12 @@ public class LevelManager implements GameObject, Renderable3d {
         this.entityManager = entityManager;
         this.settingsManager = settingsManager;
         this.physicsEngine = physicsEngine;
+        player = new Player(inputProcessor, physicsEngine, renderer, settingsManager);
+        levels = new Level[]{
+            new Level("Level 1", player, new level1(), physicsEngine),
+
+        };
+        entityManager.addEntity(player);
     }
 
     public void beginLevel(String levelName) throws RuntimeException {
@@ -83,12 +89,7 @@ public class LevelManager implements GameObject, Renderable3d {
 
     @Override
     public void create() {
-        player = new Player(inputProcessor, physicsEngine, renderer, settingsManager);
-        levels = new Level[]{
-            new Level("Level 1", player, new level1(), physicsEngine),
 
-        };
-        entityManager.addEntity(player);
 
     }
 
