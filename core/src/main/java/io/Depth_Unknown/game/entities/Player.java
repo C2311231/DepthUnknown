@@ -21,21 +21,37 @@ import io.Depth_Unknown.game.settings.Setting;
 import io.Depth_Unknown.game.settings.SettingsManager;
 
 public class Player extends Entity implements Renderable3d {
-    public EngineInputProcessor inputProcessor;
-    public Model model;
-    public ModelInstance instance;
-    public Renderer renderer;
-    public SettingsManager settingsManager;
-    public Setting<Float> sensitivity;
-    public PhysicsEngine physicsEngine;
+    private EngineInputProcessor inputProcessor;
+    private final Model model;
+    private final ModelInstance instance;
+    private final Renderer renderer;
+    private final SettingsManager settingsManager;
+    private final Setting<Float> sensitivity;
+    private final PhysicsEngine physicsEngine;
 
     private boolean moveForward = false;
     private boolean moveBackward = false;
     private boolean moveLeft = false;
     private boolean moveRight = false;
 
-    public float playerSpeed;
-    public float jumpForce = 5;
+    private float playerSpeed;
+    private float jumpForce = 5;
+
+    public float getJumpForce() {
+        return jumpForce;
+    }
+
+    public void setJumpForce(float jumpForce) {
+        this.jumpForce = jumpForce;
+    }
+
+    public float getPlayerSpeed() {
+        return playerSpeed;
+    }
+
+    public void setPlayerSpeed(float playerSpeed) {
+        this.playerSpeed = playerSpeed;
+    }
 
     public Player(EngineInputProcessor inputProcessor, PhysicsEngine physics, Renderer renderer, SettingsManager settingsManager) {
         this.physicsEngine = physics;
@@ -46,7 +62,7 @@ public class Player extends Entity implements Renderable3d {
         // Temp model
         model = modelBuilder.createCapsule(0.2f, 1f, 15, new Material(ColorAttribute.createDiffuse(Color.GREEN)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         instance = new ModelInstance(model);
-        btCapsuleShape shape = new btCapsuleShape(0.2f, 1f-2*0.2f + 0.35f);// Apparently for physics height is the distance between the capsule hemispheres, not including the radius. But rendering includes the radius...
+        btCapsuleShape shape = new btCapsuleShape(0.2f, 1f-2*0.2f + 0.35f);// Apparently for physics height is the distance between the capsule hemispheres, not including the radius. But rendering includes the radius... Extra margin was added to prevent clipping...
         shape.setMargin(0.01f);
         physicsBody = physics.addRigidBody(shape, new Matrix4(), 1);
         physicsBody.setAngularFactor(Vector3.Zero);

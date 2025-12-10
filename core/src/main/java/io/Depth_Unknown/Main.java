@@ -16,14 +16,14 @@ import io.Depth_Unknown.game.world.LevelManager;
 import java.util.ArrayList;
 
 public class Main implements ApplicationListener {
-    public Renderer renderer;
-    public PhysicsEngine physics;
-    public EngineInputProcessor input;
-    public EntityManager entityManager;
-    public UiManager uiManager;
-    public SettingsManager settingsManager;
-    public Preferences keybinds;
-    public Preferences gameSettings;
+    private Renderer renderer;
+    private PhysicsEngine physics;
+    private EngineInputProcessor input;
+    private EntityManager entityManager;
+    private UiManager uiManager;
+    private SettingsManager settingsManager;
+    private Preferences keybinds;
+    private Preferences gameSettings;
 
     ArrayList<GameObject> gameObjects =  new ArrayList<>(20);
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class EntityManager implements GameObject, Renderable3d, Renderable2d, RenderableHud {
 
-    ArrayList<Entity> entities = new ArrayList<>(20);
+    private ArrayList<Entity> entities = new ArrayList<>(20);
 
 
     @Override

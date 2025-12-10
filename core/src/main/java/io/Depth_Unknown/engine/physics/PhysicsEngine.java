@@ -21,12 +21,16 @@ import io.Depth_Unknown.game.GameObject;
 import java.util.HashMap;
 
 public class PhysicsEngine implements GameObject {
-    btBroadphaseInterface broadphase;
-    public btDiscreteDynamicsWorld world;
-    btDefaultCollisionConfiguration collisionConfig;
-    btCollisionDispatcher dispatcher;
-    HashMap<Integer, PhysicsObject> physicsObjects;
-    btSequentialImpulseConstraintSolver solver;
+    private final btBroadphaseInterface broadphase;
+    private final btDiscreteDynamicsWorld world;
+    private final btDefaultCollisionConfiguration collisionConfig;
+    private final btCollisionDispatcher dispatcher;
+    private final HashMap<Integer, PhysicsObject> physicsObjects;
+    private final btSequentialImpulseConstraintSolver solver;
+
+    public btDiscreteDynamicsWorld getWorld() {
+        return world;
+    }
 
     public PhysicsEngine() {
         Bullet.init();

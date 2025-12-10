@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class EngineInputProcessor implements InputProcessor, ControllerListener {
-    Preferences keybinds;
-    ArrayList<KeyEvent> keyEvents = new ArrayList<>(15);
+    private final Preferences keybinds;
+    private final ArrayList<KeyEvent> keyEvents = new ArrayList<>(15);
 
     public EngineInputProcessor(Preferences keybinds) {
         this.keybinds = keybinds;

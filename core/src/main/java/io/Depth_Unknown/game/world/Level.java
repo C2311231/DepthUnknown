@@ -8,9 +8,9 @@ import io.Depth_Unknown.game.entities.Player;
 
 
 public class Level implements GameObject, Renderable3d {
-    public String name;
-    public LevelScript script;
-    public Player player;
+    private String name;
+    private final LevelScript script;
+    private final Player player;
     LevelModel lvModel;
     PhysicsEngine physicsEngine;
 
@@ -25,6 +25,14 @@ public class Level implements GameObject, Renderable3d {
     @Override
     public void reset() {
 
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

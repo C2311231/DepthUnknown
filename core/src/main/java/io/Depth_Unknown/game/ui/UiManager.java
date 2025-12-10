@@ -9,13 +9,13 @@ import io.Depth_Unknown.game.ui.pause_menu.PauseMenuControler;
 import io.Depth_Unknown.game.world.LevelManager;
 
 public class UiManager implements GameObject {
-    int mode=0;
-    MenuController menuController;
-    PauseMenuControler pauseMenuControler;
-    HudControler hudControler;
-    SettingsManager settingsManager;
-    LevelManager levelManager;
-    Renderer renderer;
+    private int mode=0;
+    private MenuController menuController;
+    private PauseMenuControler pauseMenuControler;
+    private HudControler hudControler;
+    private final SettingsManager settingsManager;
+    private final LevelManager levelManager;
+    private final Renderer renderer;
 
     public UiManager(SettingsManager settingsManager, LevelManager levelManager, Renderer renderer) {
         this.settingsManager = settingsManager;

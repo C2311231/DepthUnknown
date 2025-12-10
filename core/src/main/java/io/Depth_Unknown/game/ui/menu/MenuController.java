@@ -22,16 +22,11 @@ public class MenuController implements GameObject {
     private Stage baseMenuStage;
     private Stage levelSelectStage;
     private Stage currentStage;
-
-    private Table buttonGroup;
-    UiManager uiManager;
-    TextureRegion upRegion;
-    TextureRegion downRegion;
-    BitmapFont buttonFont;
-    ScreenViewport viewport = new ScreenViewport();
-    Label fpsLabel;
-    SettingsManager settingsManager;
-    LevelManager levelManager;
+    private final UiManager uiManager;
+    private final ScreenViewport viewport = new ScreenViewport();
+    private Label fpsLabel;
+    private final SettingsManager settingsManager;
+    private final LevelManager levelManager;
 
     public MenuController(UiManager uiManager, SettingsManager settingsManager, LevelManager levelManager) {
         this.uiManager = uiManager;
@@ -46,9 +41,9 @@ public class MenuController implements GameObject {
         * Replace these with custom assets latter
         * */
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        upRegion = skin.getRegion("default-round");
-        downRegion = skin.getRegion("default-round-down");
-        buttonFont = new BitmapFont();
+        TextureRegion upRegion = skin.getRegion("default-round");
+        TextureRegion downRegion = skin.getRegion("default-round-down");
+        BitmapFont buttonFont = new BitmapFont();
 
         // Create an FPS label
         Label.LabelStyle labelStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
@@ -156,14 +151,14 @@ public class MenuController implements GameObject {
 
         // Create Buttons
 
-        for (Level level: levelManager.levels) {
-            TextButton levelSelectBtn = new TextButton(level.name, style);
+        for (Level level: levelManager.getLevels()) {
+            TextButton levelSelectBtn = new TextButton(level.getName(), style);
             levelSelectBtn.pad(20);
             levelsButtonGroup.add(levelSelectBtn).uniformX().fillX().padBottom(paddingBetween).row();
             levelSelectBtn.addListener(new ChangeListener() {
                 public void changed (ChangeEvent event, Actor actor) {
-                    System.out.println("Starting " + level.name);
-                    levelManager.beginLevel(level.name);
+                    System.out.println("Starting " + level.getName());
+                    levelManager.beginLevel(level.getName());
                     uiManager.setMode(1);
                 }
             });

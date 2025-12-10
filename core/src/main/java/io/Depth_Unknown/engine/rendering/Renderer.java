@@ -17,17 +17,16 @@ import io.Depth_Unknown.game.GameObject;
 import java.util.ArrayList;
 
 public class Renderer {
-    PerspectiveCamera camera3d;
-    OrthographicCamera camera2d;
-    Camera currentCamera;
-    ModelBatch modelBatch;
-    SpriteBatch spriteBatch;
-    Environment environment;
-    ArrayList<GameObject> gameObjects;
-    ModelInstance boxInstance;
-    private DebugDrawer debugDrawer;
-    private PhysicsEngine physicsEngine;
-    private boolean debug = false;
+    private final PerspectiveCamera camera3d;
+    private final OrthographicCamera camera2d;
+    private Camera currentCamera;
+    private final ModelBatch modelBatch;
+    private final SpriteBatch spriteBatch;
+    private final Environment environment;
+    private final ArrayList<GameObject> gameObjects;
+    private final ModelInstance boxInstance;
+    private final DebugDrawer debugDrawer;
+    private final PhysicsEngine physicsEngine;
 
     public Renderer(ArrayList<GameObject> gameObjects, PhysicsEngine physicsEngine) {
         camera3d = new PerspectiveCamera(67f,
@@ -52,7 +51,7 @@ public class Renderer {
 
 
         debugDrawer = new DebugDrawer();
-        physicsEngine.world.setDebugDrawer(debugDrawer);
+        physicsEngine.getWorld().setDebugDrawer(debugDrawer);
         debugDrawer.setDebugMode(
             DebugDrawer.DebugDrawModes.DBG_DrawWireframe |
                 DebugDrawer.DebugDrawModes.DBG_DrawConstraints);
@@ -111,9 +110,10 @@ public class Renderer {
 
         // TODO: Work in HUD rendering later.
 
+        boolean debug = false;
         if (debug) {
             debugDrawer.begin(camera3d);
-            physicsEngine.world.debugDrawWorld();
+            physicsEngine.getWorld().debugDrawWorld();
             debugDrawer.end();
         }
     }

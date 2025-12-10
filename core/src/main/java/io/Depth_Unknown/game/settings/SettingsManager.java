@@ -17,13 +17,13 @@ import java.util.ArrayList;
 
 
 public class SettingsManager implements GameObject {
-    Preferences settings;
-    Stage settingsStage;
-    TextButton settingsBackBtn;
-    ArrayList<Setting<?>> settingsList = new ArrayList<>();
-    Table settingsGroup;
-    Skin skin;
-    ChangeListener  lastListener;
+    private final Preferences settings;
+    private final Stage settingsStage;
+    private final TextButton settingsBackBtn;
+    private ArrayList<Setting<?>> settingsList = new ArrayList<>();
+    private final Table settingsGroup;
+    private final Skin skin;
+    private ChangeListener lastListener;
 
     public SettingsManager(Preferences settings) {
         settingsList = new ArrayList<>();
@@ -142,7 +142,7 @@ public class SettingsManager implements GameObject {
 
     public Setting<?> getSetting(String key) {
         for (Setting<?> setting : settingsList) {
-            if (setting.key.equals(key)) {
+            if (setting.getKey().equals(key)) {
                 return setting;
             }
         }

@@ -14,14 +14,22 @@ import io.Depth_Unknown.game.settings.SettingsManager;
 import io.Depth_Unknown.levels.level1.scripts.level1;
 
 public class LevelManager implements GameObject, Renderable3d {
-    public SettingsManager settingsManager;
-    public Level[] levels;
-    public Level currentLevel;
+    private SettingsManager settingsManager;
+    private Level[] levels;
+    private Level currentLevel;
     private Renderer renderer;
     private EngineInputProcessor inputProcessor;
-    public Player player;
+    private Player player;
     private EntityManager entityManager;
     private PhysicsEngine physicsEngine;
+
+    public Level[] getLevels() {
+        return levels;
+    }
+
+    public void setLevels(Level[] levels) {
+        this.levels = levels;
+    }
 
     public LevelManager(Renderer renderer, SettingsManager settingsManager, EngineInputProcessor inputProcessor, EntityManager entityManager, PhysicsEngine physicsEngine) {
         this.renderer = renderer;
@@ -33,7 +41,7 @@ public class LevelManager implements GameObject, Renderable3d {
 
     public void beginLevel(String levelName) throws RuntimeException {
         for (Level level : levels) {
-            if (level.name.equals(levelName) ) {
+            if (level.getName().equals(levelName) ) {
                 Gdx.input.setCursorCatched(true);
                 entityManager.reset();
                 currentLevel = level;
