@@ -12,6 +12,26 @@ This project is currently in the early development and planning stage for my CS2
 - `core`: Main module with the application logic shared by all platforms.
 - `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
 
+## Building and Running
+1. Open project directory in a terminal.
+### Run Project
+Execute
+`
+gradlew lwjgl3:run
+`
+### Build Project
+Execute
+`
+gradlew lwjgl3:build
+`
+
+### Create a JAR file
+Execute
+`
+gradlew lwjgl3:dist
+`
+File should be in: lwjgl3/build/libs/
+
 ## Gradle
 
 This project uses [Gradle](https://gradle.org/) to manage dependencies.
