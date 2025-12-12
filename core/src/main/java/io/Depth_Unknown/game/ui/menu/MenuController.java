@@ -187,11 +187,6 @@ public class MenuController implements GameObject {
     }
 
     @Override
-    public void reset() {
-
-    }
-
-    @Override
     public void render(float delta) {
         currentStage.draw();
     }

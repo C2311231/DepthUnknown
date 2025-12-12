@@ -25,15 +25,6 @@ public class UiManager implements GameObject {
         menuController = new MenuController(this, settingsManager, levelManager);
         pauseMenuControler = new PauseMenuControler();
         hudControler = new HudControler();
-
-        menuController.create();
-        pauseMenuControler.create();
-        hudControler.create();
-    }
-
-    @Override
-    public void reset() {
-
     }
 
     @Override
@@ -89,16 +80,17 @@ public class UiManager implements GameObject {
 
     public void setMode(int mode) {
         this.mode = mode;
-        switch (mode) {
-            case 0:
-                menuController.reset();
-                break;
-            case 1:
-                hudControler.reset();
-                break;
-            case 2:
-                pauseMenuControler.reset();
-                break;
-        }
+        // This may be reused later
+//        switch (mode) {
+//            case 0:
+//                menuController.reset();
+//                break;
+//            case 1:
+//                hudControler.reset();
+//                break;
+//            case 2:
+//                pauseMenuControler.reset();
+//                break;
+//        }
     }
 }

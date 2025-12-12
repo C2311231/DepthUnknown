@@ -5,11 +5,6 @@ import io.Depth_Unknown.game.GameObject;
 public class HudControler implements GameObject {
 
     @Override
-    public void create() {
-
-    }
-
-    @Override
     public void destroy() {
 
     }
@@ -19,11 +14,6 @@ public class HudControler implements GameObject {
      */
     @Override
     public void render(float deltaTime) {
-
-    }
-
-    @Override
-    public void reset() {
 
     }
 

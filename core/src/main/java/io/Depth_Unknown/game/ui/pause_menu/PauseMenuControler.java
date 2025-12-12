@@ -5,11 +5,6 @@ import io.Depth_Unknown.game.GameObject;
 public class PauseMenuControler implements GameObject {
 
     @Override
-    public void reset() {
-
-    }
-
-    @Override
     public void render(float delta) {
 
     }

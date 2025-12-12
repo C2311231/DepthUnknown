@@ -17,11 +17,7 @@ import java.util.ArrayList;
 
 public class Main implements ApplicationListener {
     private Renderer renderer;
-    private PhysicsEngine physics;
-    private EngineInputProcessor input;
-    private EntityManager entityManager;
     private UiManager uiManager;
-    private SettingsManager settingsManager;
     private Preferences keybinds;
     private Preferences gameSettings;
 
@@ -30,27 +26,24 @@ public class Main implements ApplicationListener {
     /**
      * Called when the application is Started
      * */
+    // TODO Find a better way to avoid this mess of reference passes
     @Override
     public void create() {
         keybinds = Gdx.app.getPreferences("Depth_Unknown_KeyBinds");
         gameSettings = Gdx.app.getPreferences("Depth_Unknown_Game_Settings");
-        physics = new PhysicsEngine();
+        PhysicsEngine physics = new PhysicsEngine();
         renderer = new Renderer(gameObjects, physics);
-        input = new EngineInputProcessor(keybinds);
-        entityManager = new EntityManager();
-        settingsManager = new SettingsManager(gameSettings);
+        EngineInputProcessor input = new EngineInputProcessor(keybinds);
+        EntityManager entityManager = new EntityManager();
+        SettingsManager settingsManager = new SettingsManager(gameSettings);
         LevelManager levelManager = new LevelManager(renderer, settingsManager, input, entityManager, physics);
         uiManager = new UiManager(settingsManager, levelManager, renderer);
+
         gameObjects.add(levelManager);
         gameObjects.add(physics);
         gameObjects.add(entityManager);
         gameObjects.add(settingsManager);
         gameObjects.add(uiManager); //Must be created after level manager
-
-
-        for (GameObject gameObject : gameObjects) {
-            gameObject.create();
-        }
     }
 
     /**

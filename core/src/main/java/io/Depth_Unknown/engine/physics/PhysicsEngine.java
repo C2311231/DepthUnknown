@@ -73,29 +73,12 @@ public class PhysicsEngine implements GameObject {
         return hull;
     }
 
-
-    /**
-     *
-     */
-    @Override
-    public void reset() {
-
-    }
-
     /**
      * @param delta
      */
     @Override
     public void update(float delta) {
         world.stepSimulation(delta, 5, 1f / 60f);
-    }
-
-    /**
-     *
-     */
-    @Override
-    public void create() {
-
     }
 
     /**

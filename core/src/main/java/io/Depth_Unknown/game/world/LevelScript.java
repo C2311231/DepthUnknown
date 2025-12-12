@@ -15,11 +15,6 @@ public abstract class LevelScript implements GameObject {
     }
 
     @Override
-    public void reset() {
-
-    }
-
-    @Override
     public void update(float delta) {
 
     }

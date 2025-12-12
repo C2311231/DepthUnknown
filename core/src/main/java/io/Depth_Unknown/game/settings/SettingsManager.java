@@ -74,14 +74,6 @@ public class SettingsManager implements GameObject {
         }
     }
 
-    /**
-     *
-     */
-    @Override
-    public void reset() {
-
-    }
-
     public void setViewport(ScreenViewport viewport) {
         this.settingsStage.setViewport(viewport);
     }

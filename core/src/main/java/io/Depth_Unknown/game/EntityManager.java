@@ -17,7 +17,6 @@ public class EntityManager implements GameObject, Renderable3d, Renderable2d, Re
     private ArrayList<Entity> entities = new ArrayList<>(20);
 
 
-    @Override
     /**
      * Destroys all entities BESIDES the player
      * */

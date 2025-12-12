@@ -2,13 +2,7 @@ package io.Depth_Unknown.game;
 
 public interface GameObject {
 
-    // TODO Eliminate reset method as most classes do not make use of it
-    void reset();
     void update(float delta);
-
-    // TODO Eliminate create() and instead move everything to the construstor.
-    void create();
-
 
     void destroy();
 

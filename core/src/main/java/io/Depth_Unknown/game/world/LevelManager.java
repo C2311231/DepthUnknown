@@ -62,7 +62,7 @@ public class LevelManager implements GameObject, Renderable3d {
     /**
      * Starts First Level
      * */
-    public void beginLevel() throws RuntimeException{
+    public void beginLevel() throws RuntimeException {
         if (levels.length == 0) {
             throw new RuntimeException("Levels array is empty");
 
@@ -76,21 +76,10 @@ public class LevelManager implements GameObject, Renderable3d {
     }
 
     @Override
-    public void reset() {
-
-    }
-
-    @Override
     public void update(float delta) {
         if (currentLevel != null) {
             currentLevel.update(delta);
         }
-    }
-
-    @Override
-    public void create() {
-
-
     }
 
     @Override

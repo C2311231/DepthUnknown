@@ -22,11 +22,6 @@ public class Level implements GameObject, Renderable3d {
         this.lvModel = new LevelModel(LevelLoader.loadLevelModel(script), physicsEngine);
     }
 
-    @Override
-    public void reset() {
-
-    }
-
     public String getName() {
         return name;
     }
