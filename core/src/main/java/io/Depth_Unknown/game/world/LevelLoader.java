@@ -3,6 +3,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.UBJsonReader;
@@ -22,6 +23,7 @@ public class LevelLoader {
         */
         for (Material mat : model.materials) {
             mat.remove(ColorAttribute.Emissive);
+            mat.set(new IntAttribute(IntAttribute.CullFace, 0)); // 0 = no culling
         }
 
         return model;

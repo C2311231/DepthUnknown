@@ -49,7 +49,8 @@ public class Renderer {
         Model box = mb.createBox(2, 2, 2, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         boxInstance = new ModelInstance(box); boxInstance.transform.setToTranslation(0, 0, -5); // IN FRONT OF CAMERA
 
-
+        camera2d.zoom = 0.025f;
+        camera2d.near = 0.01f;
         debugDrawer = new DebugDrawer();
         physicsEngine.getWorld().setDebugDrawer(debugDrawer);
         debugDrawer.setDebugMode(
@@ -61,13 +62,20 @@ public class Renderer {
         camera3d.position.set(position);
     }
 
-    public void setCamera3dRotation(Quaternion q) {
-        //camera3d.rotate(q);
-        // ^ Will need to be later checked to see if this adds to camera rotation or simply sets it
+    public void setCurrentCamera(Camera camera) {
+        currentCamera = camera;
     }
 
-    public PerspectiveCamera getCamera3d() {
+    public Camera getCurrentCamera() {
+        return currentCamera;
+    }
+
+    public Camera getCamera3d() {
         return camera3d;
+    }
+
+    public OrthographicCamera getCamera2d() {
+        return camera2d;
     }
 
     public void setCamera2dPosition(float x, float y,  float z, boolean direction_x, boolean negative) {

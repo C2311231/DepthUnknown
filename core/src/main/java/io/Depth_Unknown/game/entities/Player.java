@@ -2,17 +2,17 @@ package io.Depth_Unknown.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.CollisionConstants;
 import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import io.Depth_Unknown.engine.input.EngineInputProcessor;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.engine.rendering.Renderable3d;
@@ -34,8 +34,25 @@ public class Player extends Entity implements Renderable3d {
     private boolean moveLeft = false;
     private boolean moveRight = false;
 
+    // Variables for used for smooth camera switching
+    private final float transitionTime = 0.5f;
+    private boolean lockCamtoPlayer = true;
+    private boolean cameraSwitching = false;
+    private Vector3 cameraDestination;
+    private Vector3 cameraStartPosition;
+    private double cameraTimeStep;
+    private float flyStageProgress = 0f;
+
+    private float zoomStart = 0.005f;
+    private float zoomEnd = 0.025f;
+    private float zoomStageProgress = 0f;
+
+
     private float playerSpeed;
     private float jumpForce = 5;
+
+    private float yaw = 0f;
+    private float pitch = 0f;
 
     public float getJumpForce() {
         return jumpForce;
@@ -72,6 +89,7 @@ public class Player extends Entity implements Renderable3d {
         physicsBody.setSpinningFriction(0.0f);
         physicsBody.setDamping(0.2f, 0.0f);
 
+
         this.settingsManager = settingsManager;
 
         sensitivity = settingsManager.registerSetting("Mouse Sensitivity", 0.0025f * 100);
@@ -82,6 +100,11 @@ public class Player extends Entity implements Renderable3d {
             moveForward = true;
         }, () -> {
             moveForward = false;
+        });
+
+        inputProcessor.registerControl("TestKey", Input.Keys.N, () -> {
+        }, () -> {
+            switchCamera2D(new Vector3(5, 5, 5), new Quaternion());
         });
 
         inputProcessor.registerControl("Backward", Input.Keys.S, () -> {
@@ -134,19 +157,12 @@ public class Player extends Entity implements Renderable3d {
     public void update(float delta) {
         updateMovement(delta);
         super.update(delta);
-        renderer.setCamera3dPosition(physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0, 0.5f, 0));
-
 
         // Get mouse rotation change (easier than bundling it in input processor)
         float dx = Gdx.input.getDeltaX();
         float dy = Gdx.input.getDeltaY();
 
         float sensitivity = ((float) this.sensitivity.getValue()) / 100;
-
-        Vector3 dir = renderer.getCamera3d().direction;
-
-        float yaw = (float) Math.atan2(-dir.x, -dir.z);
-        float pitch = (float) Math.asin(dir.y);
 
         yaw += -dx * sensitivity;  // mouse left/right
         pitch += -dy * sensitivity;  // mouse up/down
@@ -163,9 +179,12 @@ public class Player extends Entity implements Renderable3d {
 
         float cosPitch = (float) Math.cos(pitch);
 
-        renderer.getCamera3d().direction.set(-(float) Math.sin(yaw) * cosPitch,
-            (float) Math.sin(pitch),
-            -(float) Math.cos(yaw) * cosPitch).setLength(1).nor();
+        if (lockCamtoPlayer) {
+            renderer.setCamera3dPosition(physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0, 0.5f, 0));
+            renderer.getCamera3d().direction.set(-(float) Math.sin(yaw) * cosPitch,
+                (float) Math.sin(pitch),
+                -(float) Math.cos(yaw) * cosPitch).setLength(1).nor();
+        }
 
         instance.transform.set(physicsBody.getWorldTransform());
     }
@@ -180,6 +199,9 @@ public class Player extends Entity implements Renderable3d {
 
     public void updateMovement(float delta) {
 
+        if (cameraSwitching){
+            handleCameraSwitch2D(delta);
+        }
         float acceleration = 10f; // Tuned by feel
 
         Vector3 currentVel = physicsBody.getLinearVelocity();
@@ -199,7 +221,7 @@ public class Player extends Entity implements Renderable3d {
         if (moveLeft)     desiredVel.add(right.cpy().scl(-playerSpeed));
         if (moveRight)    desiredVel.add(right.cpy().scl(playerSpeed));
 
-        // Preserve vertical velocity (gravity, jumps)
+        // Preserve vertical velocity
         desiredVel.y = currentVel.y;
 
         Vector3 newVel = currentVel.lerp(desiredVel, Math.min(1f, acceleration * delta));
@@ -214,6 +236,71 @@ public class Player extends Entity implements Renderable3d {
         }
 
     }
+
+    public void switchCamera2D(Vector3 position, Quaternion rotation) {
+        lockCamtoPlayer = false;
+        cameraSwitching = true;
+        cameraDestination = position;
+        cameraTimeStep = 0.0;
+        zoomStageProgress = 0.0f;
+        flyStageProgress = 0.0f;
+        cameraStartPosition = renderer.getCamera3d().position;
+        renderer.getCamera2d().position.set(position);
+        renderer.getCamera2d().update();
+        renderer.getCamera2d().rotate(rotation);
+        renderer.getCamera2d().update();
+        zoomEnd = renderer.getCamera2d().zoom;
+    }
+
+    // Created with AI assistance
+    private void handleCameraSwitch2D(float delta) {
+        cameraTimeStep += delta;
+        float totalTime = transitionTime; // total duration of the transition
+
+        Camera camera3d = renderer.getCamera3d();
+        OrthographicCamera camera2d = renderer.getCamera2d();
+
+        // Clamp t to [0,1]
+        float t = Math.min((float) cameraTimeStep / totalTime, 1f);
+        float tInterp = Interpolation.smooth2.apply(t);
+
+        // Fly 3D camera toward surface (linear/ eased)
+        Vector3 flyPos = new Vector3(
+            MathUtils.lerp(cameraStartPosition.x, cameraDestination.x, tInterp),
+            MathUtils.lerp(cameraStartPosition.y, cameraDestination.y, tInterp),
+            MathUtils.lerp(cameraStartPosition.z, cameraDestination.z, tInterp)
+        );
+        camera3d.position.set(flyPos);
+        camera3d.update();
+
+        // Position 2D camera at surface (already in place)
+        camera2d.position.set(cameraDestination);
+
+        // Zoom 2D camera from zoomStart → zoomEnd
+        camera2d.zoom = MathUtils.lerp(zoomStart, zoomEnd, tInterp);
+        camera2d.update();
+
+        // Decide which camera to render with
+        if (t < 0.5f) {
+            // first half: show 3D fly
+            renderer.setCurrentCamera(camera3d);
+        } else {
+            // second half: switch to 2D smoothly
+            renderer.setCurrentCamera(camera2d);
+        }
+
+        // End of transition
+        if (t >= 1f) {
+            cameraSwitching = false;
+            lockCamtoPlayer = true;
+            camera2d.position.set(cameraDestination);
+            camera2d.zoom = zoomEnd;
+            camera2d.update();
+            renderer.setCurrentCamera(camera2d);
+        }
+    }
+
+
 
 
 }
