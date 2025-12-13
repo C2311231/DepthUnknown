@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.game.GameObject;
 
@@ -26,6 +29,7 @@ public class Renderer {
     private final DebugDrawer debugDrawer;
     private final PhysicsEngine physicsEngine;
     private final boolean debug = false;
+    private final Stage stage;
 
 
     public Renderer(ArrayList<GameObject> gameObjects, PhysicsEngine physicsEngine) {
@@ -41,6 +45,7 @@ public class Renderer {
         spriteBatch = new SpriteBatch();
         this.gameObjects = gameObjects;
         this.physicsEngine = physicsEngine;
+        this.stage = new Stage(new ScreenViewport());
 
         // Configure soft global light
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.7f, 0.7f, 0.7f, 1f));
@@ -57,6 +62,10 @@ public class Renderer {
         debugDrawer.setDebugMode(
             DebugDrawer.DebugDrawModes.DBG_DrawWireframe |
                 DebugDrawer.DebugDrawModes.DBG_DrawConstraints);
+    }
+
+    public Stage getStage() {
+        return this.stage;
     }
 
     public void setCamera3dPosition(Vector3 position) {
@@ -110,7 +119,7 @@ public class Renderer {
             modelBatch.render(boxInstance, environment); // Used for debugging
         }
         modelBatch.end();
-        spriteBatch.setProjectionMatrix(currentCamera.combined);
+        spriteBatch.setProjectionMatrix(camera2d.combined);
         spriteBatch.begin();
         for (GameObject gameObject : gameObjects) {
             if (gameObject instanceof Renderable2d) {
@@ -120,6 +129,9 @@ public class Renderer {
         spriteBatch.end();
 
         // TODO: Work in HUD rendering later.
+
+        stage.act();
+        stage.draw();
 
         boolean debug = false;
         if (debug) {

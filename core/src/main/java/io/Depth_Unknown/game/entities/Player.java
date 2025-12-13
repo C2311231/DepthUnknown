@@ -2,10 +2,7 @@ package io.Depth_Unknown.game.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -13,6 +10,7 @@ import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.CollisionConstants;
 import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import io.Depth_Unknown.engine.input.EngineInputProcessor;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.engine.rendering.Renderable3d;
@@ -55,6 +53,10 @@ public class Player extends Entity implements Renderable3d {
     private float yaw = 0f;
     private float pitch = 0f;
 
+    Image crosshairHitImage = new Image(new Texture("Player/crosshairHIT.png"));
+    Image crosshairMissImage = new Image(new Texture("Player/crosshairMiss.png"));
+    Image currentCrossHair = crosshairMissImage;
+
     // 2D camera following variables
     float followStrength = 6f;       // higher = snappier
 
@@ -73,6 +75,46 @@ public class Player extends Entity implements Renderable3d {
 
     public void setPlayerSpeed(float playerSpeed) {
         this.playerSpeed = playerSpeed;
+    }
+
+    private void updateCrosshairHitImage() {
+        if (currentCamera2D) {
+            crosshairMissImage.remove();
+            crosshairHitImage.remove();
+            return;
+        }
+        if (raycastCameraPositionTest()) {
+            if (currentCrossHair.equals(crosshairHitImage))
+                return;
+            currentCrossHair = crosshairHitImage;
+            crosshairMissImage.remove();
+            crosshairHitImage.setPosition(
+                Gdx.graphics.getWidth() / 2f - crosshairHitImage.getWidth()/2,
+                Gdx.graphics.getHeight() / 2f - crosshairHitImage.getHeight()/2
+            );
+            renderer.getStage().addActor(crosshairHitImage);
+        }
+        else {
+            if (currentCrossHair.equals(crosshairMissImage))
+                return;
+            currentCrossHair = crosshairMissImage;
+            crosshairHitImage.remove();
+            crosshairMissImage.setPosition(
+                Gdx.graphics.getWidth() / 2f - crosshairMissImage.getWidth()/2,
+                Gdx.graphics.getHeight() / 2f - crosshairMissImage.getHeight()/2
+            );
+            renderer.getStage().addActor(crosshairMissImage);
+        }
+    }
+
+    public boolean raycastCameraPositionTest() {
+        Vector3 from = renderer.getCamera3d().position.cpy();
+        Vector3 direction = renderer.getCamera3d().direction.cpy().nor();
+        Vector3 to = from.cpy().mulAdd(direction, 50);
+        ClosestRayResultCallback cb = new ClosestRayResultCallback(from, to);
+        physicsEngine.rayCast(from, to, cb);
+
+        return cb.hasHit();
     }
 
     public void raycastCameraPositionSet() {
@@ -98,7 +140,7 @@ public class Player extends Entity implements Renderable3d {
 
     public Player(EngineInputProcessor inputProcessor, PhysicsEngine physics, Renderer renderer, SettingsManager settingsManager) {
         this.physicsEngine = physics;
-
+        renderer.getStage().addActor(crosshairMissImage);
         this.inputProcessor = inputProcessor;
         this.renderer = renderer;
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -126,16 +168,6 @@ public class Player extends Entity implements Renderable3d {
             moveForward = true;
         }, () -> {
             moveForward = false;
-        });
-
-        inputProcessor.registerControl("TestKey", Input.Keys.N, () -> {
-        }, () -> {
-            if (currentCamera2D) {
-                switchCamera3D();
-            }
-            else {
-                raycastCameraPositionSet();
-            }
         });
 
         inputProcessor.registerControl("Backward", Input.Keys.S, () -> {
@@ -188,7 +220,16 @@ public class Player extends Entity implements Renderable3d {
     @Override
     public void update(float delta) {
         super.update(delta);
+        updateCrosshairHitImage();
 
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            if (currentCamera2D) {
+                switchCamera3D();
+            }
+            else {
+                raycastCameraPositionSet();
+            }
+        }
         if (!currentCamera2D)
             updateMovement3d(delta);
         else
@@ -316,7 +357,6 @@ public class Player extends Entity implements Renderable3d {
 
     }
 
-    //TODO Fix this function it does not accurately work based upon camera rotation
     private void updateMovement2d(float delta) {
         float acceleration = 10f; // Tuned by feel
 
