@@ -56,8 +56,7 @@ public class Player extends Entity implements Renderable3d {
     private float pitch = 0f;
 
     // 2D camera following variables
-    Vector3 camVel = new Vector3();
-    float followStrength = 12f;       // higher = snappier
+    float followStrength = 6f;       // higher = snappier
 
 
     public float getJumpForce() {
@@ -188,8 +187,6 @@ public class Player extends Entity implements Renderable3d {
     // TODO Separate this out into more submethods
     @Override
     public void update(float delta) {
-        System.out.println(renderer.getCurrentCamera().position);
-        System.out.println(renderer.getCurrentCamera().direction);
         super.update(delta);
 
         if (!currentCamera2D)
@@ -225,7 +222,45 @@ public class Player extends Entity implements Renderable3d {
                 -(float) Math.cos(yaw) * cosPitch).setLength(1).nor();
         }
 
-        // TODO Come up with a new way to move the 2d camera smoothly along the same plane to follow the player
+        Camera cam = renderer.getCamera2d();
+
+        Vector3 camPos = cam.position.cpy();
+        Vector3 playerPos = physicsBody.getWorldTransform().getTranslation(new Vector3());
+
+        Vector3 toPlayer = playerPos.cpy().sub(camPos);
+
+        Vector3 camForward = new Vector3(cam.direction).nor();
+        Vector3 camRight = camForward.cpy().crs(cam.up).nor();
+        Vector3 camUp = new Vector3(cam.up).nor();
+
+        float x = toPlayer.dot(camRight);
+        float y = toPlayer.dot(camUp);
+
+        if (Math.abs(x) > 5 || Math.abs(y) > 3) {
+
+            Vector3 offset = new Vector3(
+                x,   // right
+                y,      // up
+                0  // forward
+            );
+            offset.scl(followStrength*delta);
+
+            // Build camera basis
+            Vector3 forward = new Vector3(cam.direction).nor();
+            Vector3 right   = forward.cpy().crs(cam.up).nor();
+            Vector3 up      = new Vector3(cam.up).nor();
+
+            // Convert local offset to world offset
+            Vector3 worldOffset = new Vector3()
+                .add(right.scl(offset.x))
+                .add(up.scl(offset.y))
+                .add(forward.scl(offset.z));
+
+
+            cam.position.add(worldOffset);
+            cam.update();
+
+        }
 
         instance.transform.set(physicsBody.getWorldTransform());
 
