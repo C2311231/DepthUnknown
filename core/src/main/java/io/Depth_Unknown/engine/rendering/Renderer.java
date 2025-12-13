@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
@@ -27,6 +25,8 @@ public class Renderer {
     private final ModelInstance boxInstance;
     private final DebugDrawer debugDrawer;
     private final PhysicsEngine physicsEngine;
+    private final boolean debug = false;
+
 
     public Renderer(ArrayList<GameObject> gameObjects, PhysicsEngine physicsEngine) {
         camera3d = new PerspectiveCamera(67f,
@@ -51,6 +51,7 @@ public class Renderer {
 
         camera2d.zoom = 0.025f;
         camera2d.near = 0.01f;
+        camera3d.near = 0.05f;
         debugDrawer = new DebugDrawer();
         physicsEngine.getWorld().setDebugDrawer(debugDrawer);
         debugDrawer.setDebugMode(
@@ -105,7 +106,9 @@ public class Renderer {
                 ((Renderable3d) gameObject).render3d(modelBatch, environment);
             }
         }
-        modelBatch.render(boxInstance, environment); // Used for debugging
+        if (debug) {
+            modelBatch.render(boxInstance, environment); // Used for debugging
+        }
         modelBatch.end();
         spriteBatch.setProjectionMatrix(currentCamera.combined);
         spriteBatch.begin();

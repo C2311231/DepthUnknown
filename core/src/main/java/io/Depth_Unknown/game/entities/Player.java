@@ -85,7 +85,7 @@ public class Player extends Entity implements Renderable3d {
         // Temp model
         model = modelBuilder.createCapsule(0.2f, 1f, 15, new Material(ColorAttribute.createDiffuse(Color.GREEN)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         instance = new ModelInstance(model);
-        btCapsuleShape shape = new btCapsuleShape(0.2f, 1f-2*0.2f + 0.35f);// Apparently for physics height is the distance between the capsule hemispheres, not including the radius. But rendering includes the radius... Extra margin was added to prevent clipping...
+        btCapsuleShape shape = new btCapsuleShape(0.2f, 1f-2*0.2f); // + 0.35f);// Apparently for physics height is the distance between the capsule hemispheres, not including the radius. But rendering includes the radius... Extra margin was added to prevent clipping...
         shape.setMargin(0.01f);
         physicsBody = physics.addRigidBody(shape, new Matrix4(), 1);
         physicsBody.setAngularFactor(Vector3.Zero);
