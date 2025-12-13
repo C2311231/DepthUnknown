@@ -56,7 +56,7 @@ public class Player extends Entity implements Renderable3d {
     private float pitch = 0f;
 
     // 2D camera following variables
-    Vector2 camVel = new Vector2();
+    Vector3 camVel = new Vector3();
     float followStrength = 12f;       // higher = snappier
 
 
@@ -74,6 +74,27 @@ public class Player extends Entity implements Renderable3d {
 
     public void setPlayerSpeed(float playerSpeed) {
         this.playerSpeed = playerSpeed;
+    }
+
+    public void raycastCameraPositionSet() {
+        Vector3 from = renderer.getCamera3d().position.cpy();
+        Vector3 direction = renderer.getCamera3d().direction.cpy().nor();
+        Vector3 to = from.cpy().mulAdd(direction, 50);
+        ClosestRayResultCallback cb = new ClosestRayResultCallback(from, to);
+        physicsEngine.rayCast(from, to, cb);
+
+        if (cb.hasHit()) {
+            Vector3 hitPoint = new Vector3();
+            cb.getHitPointWorld(hitPoint);
+            Vector3 hitNormal = new Vector3();
+            cb.getHitNormalWorld(hitNormal);
+            hitNormal.nor();
+
+            Vector3 camOffset = hitNormal.cpy().scl(0.05f); // small offset
+            switchCamera2D(hitPoint.cpy().add(camOffset), hitNormal);
+
+
+        }
     }
 
     public Player(EngineInputProcessor inputProcessor, PhysicsEngine physics, Renderer renderer, SettingsManager settingsManager) {
@@ -114,7 +135,7 @@ public class Player extends Entity implements Renderable3d {
                 switchCamera3D();
             }
             else {
-                switchCamera2D(new Vector3(5, 5, 5), new Quaternion());
+                raycastCameraPositionSet();
             }
         });
 
@@ -167,6 +188,8 @@ public class Player extends Entity implements Renderable3d {
     // TODO Separate this out into more submethods
     @Override
     public void update(float delta) {
+        System.out.println(renderer.getCurrentCamera().position);
+        System.out.println(renderer.getCurrentCamera().direction);
         super.update(delta);
 
         if (!currentCamera2D)
@@ -201,29 +224,8 @@ public class Player extends Entity implements Renderable3d {
                 (float) Math.sin(pitch),
                 -(float) Math.cos(yaw) * cosPitch).setLength(1).nor();
         }
-        Vector3 playerPosRelativeTo2D = physicsBody.getWorldTransform().getTranslation(new Vector3());
-        playerPosRelativeTo2D.mul(renderer.getCamera2d().view);
 
-        Vector2 camPos = new Vector2(renderer.getCamera2d().position.x, renderer.getCamera2d().position.y);
-        Vector2 target = new Vector2(position.x, position.y);
-
-        Vector2 distDelta = new Vector2(0, 0);
-
-        // Critically damped spring
-
-        // Adds a dead-zone if player is close enough to centered
-        if (Math.abs(playerPosRelativeTo2D.x) >= 3 || Math.abs(playerPosRelativeTo2D.y) >= 3 ) {
-            distDelta = target.sub(camPos);
-        }
-
-        camVel.mulAdd(distDelta, followStrength * delta);
-        camVel.scl(MathUtils.clamp(1f - followStrength * delta, 0f, 1f));
-
-        camPos.mulAdd(camVel, delta);
-
-        // Apply back to camera
-        renderer.getCamera2d().position.set(camPos.x, camPos.y, renderer.getCamera2d().position.z);
-        renderer.getCamera2d().update();
+        // TODO Come up with a new way to move the 2d camera smoothly along the same plane to follow the player
 
         instance.transform.set(physicsBody.getWorldTransform());
 
@@ -279,18 +281,18 @@ public class Player extends Entity implements Renderable3d {
 
     }
 
+    //TODO Fix this function it does not accurately work based upon camera rotation
     private void updateMovement2d(float delta) {
         float acceleration = 10f; // Tuned by feel
 
         Vector3 currentVel = physicsBody.getLinearVelocity();
 
-        Matrix4 transform = renderer.getCamera2d().view;
+        Vector3 direction = renderer.getCamera2d().direction;
 
-        Vector3 forward = (new Vector3(0, 0, -1)).rot(transform);
-        Vector3 right = (new Vector3(1, 0, 0)).rot(transform);
+        Vector3 right = new Vector3(direction).crs(Vector3.Y).nor();
 
-        forward.y = 0; forward.nor();
-        right.y   = 0; right.nor();
+        right.y   = 0;
+        right.nor();
 
         Vector3 desiredVel = new Vector3();
         if (moveLeft)     desiredVel.add(right.cpy().scl(-playerSpeed));
@@ -312,7 +314,7 @@ public class Player extends Entity implements Renderable3d {
 
     }
 
-    public void switchCamera2D(Vector3 position, Quaternion rotation) {
+    public void switchCamera2D(Vector3 position, Vector3 direction) {
         lockCamtoPlayer = false;
         cameraSwitching = true;
         cameraDestination = position;
@@ -320,7 +322,8 @@ public class Player extends Entity implements Renderable3d {
         cameraStartPosition = renderer.getCamera3d().position;
         renderer.getCamera2d().position.set(position);
         renderer.getCamera2d().update();
-        renderer.getCamera2d().rotate(rotation);
+        renderer.getCamera2d().direction.set(direction);
+        renderer.getCamera2d().up.set(Vector3.Y);  // world up (0, 1, 0)
         renderer.getCamera2d().update();
     }
 
@@ -412,7 +415,8 @@ public class Player extends Entity implements Renderable3d {
             cameraSwitching = false;
             lockCamtoPlayer = true;
             renderer.setCurrentCamera(camera3d);
-
+            camera3d.up.set(Vector3.Y);  // world up (0, 1, 0)
+            camera3d.update();
             Vector3 dir = camera3d.direction.cpy().nor();
             yaw = MathUtils.atan2(-dir.x, -dir.z);
             pitch = MathUtils.asin(dir.y);
