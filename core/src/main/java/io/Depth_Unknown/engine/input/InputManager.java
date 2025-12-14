@@ -8,11 +8,11 @@ import com.badlogic.gdx.controllers.ControllerListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class EngineInputProcessor implements InputProcessor, ControllerListener {
+public class InputManager implements InputProcessor, ControllerListener {
     private final Preferences keybinds;
     private final ArrayList<KeyEvent> keyEvents = new ArrayList<>(15);
 
-    public EngineInputProcessor(Preferences keybinds) {
+    public InputManager(Preferences keybinds) {
         this.keybinds = keybinds;
     }
 
@@ -177,7 +177,7 @@ public class EngineInputProcessor implements InputProcessor, ControllerListener 
     }
 
     /**
-     * Controller input handling
+     * TODO Controller input handling
      * Low priority
      * */
     @Override

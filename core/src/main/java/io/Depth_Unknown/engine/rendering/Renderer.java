@@ -129,8 +129,6 @@ public class Renderer {
         spriteBatch.end();
         stage.act();
         stage.draw();
-
-        boolean debug = false;
         if (debug) {
             debugDrawer.begin(camera3d);
             physicsEngine.getWorld().debugDrawWorld();

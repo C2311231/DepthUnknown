@@ -5,29 +5,27 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.Depth_Unknown.engine.rendering.Renderer;
+import io.Depth_Unknown.game.Game;
 import io.Depth_Unknown.game.GameObject;
-import io.Depth_Unknown.game.settings.SettingsManager;
-import io.Depth_Unknown.game.world.Level;
-import io.Depth_Unknown.game.world.LevelManager;
+import io.Depth_Unknown.engine.settings.SettingsManager;
 
 
 public class MenuController implements GameObject {
     private final ScreenViewport viewport = new ScreenViewport();
     private Label fpsLabel;
     private final SettingsManager settingsManager;
-    private final LevelManager levelManager;
+    private final Game.LevelManager levelManager;
     private final Renderer renderer;
     private final LevelSelectController levelSelectController;
     private Table baseButtonGroup;
 
-    public MenuController(SettingsManager settingsManager, LevelManager levelManager,  Renderer renderer, LevelSelectController levelSelectController) {
+    public MenuController(SettingsManager settingsManager, Game.LevelManager levelManager, Renderer renderer, LevelSelectController levelSelectController) {
         this.settingsManager = settingsManager;
         this.levelManager = levelManager;
         this.renderer = renderer;

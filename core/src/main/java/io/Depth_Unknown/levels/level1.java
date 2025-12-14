@@ -1,4 +1,4 @@
-package io.Depth_Unknown.levels.level1.scripts;
+package io.Depth_Unknown.levels;
 
 import com.badlogic.gdx.math.Vector3;
 import io.Depth_Unknown.game.world.LevelScript;

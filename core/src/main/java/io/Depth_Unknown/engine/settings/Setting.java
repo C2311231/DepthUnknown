@@ -1,4 +1,4 @@
-package io.Depth_Unknown.game.settings;
+package io.Depth_Unknown.engine.settings;
 
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
@@ -9,7 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 /**
  * This allows multiple subtypes like arraylists have
- * Created with assistance from ChatGpt
+ * Created with assistance from ChatGPT and W3Schools
+ * <a href="https://www.w3schools/com/java/java_generics.asp">W3Schools</a>
  * */
 public class Setting<T> {
     private final String key;
@@ -71,9 +72,11 @@ public class Setting<T> {
             System.err.println("Save Unsupported type for setting: " + defaultValue.getClass());
         }
     }
+
     public Label getLabel() {
         return new Label(key, new Label.LabelStyle(new BitmapFont(), Color.WHITE));
     }
+
     public Actor getActor(Skin skin) {
         if (value instanceof Boolean) {
             CheckBox checkBox = new CheckBox("", skin);

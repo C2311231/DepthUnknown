@@ -5,28 +5,26 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import io.Depth_Unknown.engine.input.EngineInputProcessor;
+import io.Depth_Unknown.engine.input.InputManager;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.Game;
 import io.Depth_Unknown.game.GameObject;
-import io.Depth_Unknown.game.settings.SettingsManager;
-import io.Depth_Unknown.game.world.LevelManager;
+import io.Depth_Unknown.engine.settings.SettingsManager;
 
 public class PauseMenuControler implements GameObject {
-    private final LevelManager levelManager;
+    private final Game.LevelManager levelManager;
     private final SettingsManager settingsManager;
     private final Renderer renderer;
     private final Table baseButtonGroup;
     private final MenuController menuController;
 
-    public PauseMenuControler(SettingsManager settingsManager, LevelManager levelManager, Renderer renderer, MenuController menuController, EngineInputProcessor inputProcessor) {
+    public PauseMenuControler(SettingsManager settingsManager, Game.LevelManager levelManager, Renderer renderer, MenuController menuController, InputManager inputProcessor) {
         this.levelManager = levelManager;
         this.settingsManager = settingsManager;
         this.renderer = renderer;

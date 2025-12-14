@@ -11,16 +11,16 @@ import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.CollisionConstants;
 import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import io.Depth_Unknown.engine.input.EngineInputProcessor;
+import io.Depth_Unknown.engine.input.InputManager;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.engine.rendering.Renderable3d;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.Game;
-import io.Depth_Unknown.game.settings.Setting;
-import io.Depth_Unknown.game.settings.SettingsManager;
+import io.Depth_Unknown.engine.settings.Setting;
+import io.Depth_Unknown.engine.settings.SettingsManager;
 
 public class Player extends Entity implements Renderable3d {
-    private EngineInputProcessor inputProcessor;
+    private InputManager inputProcessor;
     private final Model model;
     private final ModelInstance instance;
     private final Renderer renderer;
@@ -139,7 +139,7 @@ public class Player extends Entity implements Renderable3d {
         }
     }
 
-    public Player(EngineInputProcessor inputProcessor, PhysicsEngine physics, Renderer renderer, SettingsManager settingsManager) {
+    public Player(InputManager inputProcessor, PhysicsEngine physics, Renderer renderer, SettingsManager settingsManager) {
         this.physicsEngine = physics;
         renderer.getStage().addActor(crosshairMissImage);
         this.inputProcessor = inputProcessor;
