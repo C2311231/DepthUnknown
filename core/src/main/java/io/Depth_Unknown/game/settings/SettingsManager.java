@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public class SettingsManager implements GameObject {
     private final Preferences settings;
-    private final Stage settingsStage;
     private final TextButton settingsBackBtn;
     private ArrayList<Setting<?>> settingsList = new ArrayList<>();
     private final Table settingsGroup;
@@ -28,7 +27,6 @@ public class SettingsManager implements GameObject {
     public SettingsManager(Preferences settings) {
         settingsList = new ArrayList<>();
         this.settings = settings;
-        settingsStage = new Stage();
 
         /*
          * Replace these with custom assets latter
@@ -53,8 +51,6 @@ public class SettingsManager implements GameObject {
          * Settings Stage set up
          * */
         settingsGroup = new Table();
-        settingsStage.addActor(settingsGroup);
-
         settingsGroup.center().top();
         settingsGroup.setFillParent(true);
         settingsGroup.pad(5);
@@ -65,8 +61,6 @@ public class SettingsManager implements GameObject {
 
         settingsGroup.add(settingsBackBtn);
         settingsGroup.row().padBottom(15);
-
-
         for (Setting setting : settingsList) {
             settingsGroup.add(setting.getLabel());
             settingsGroup.add(setting.getActor(skin));
@@ -74,12 +68,13 @@ public class SettingsManager implements GameObject {
         }
     }
 
-    public void setViewport(ScreenViewport viewport) {
-        this.settingsStage.setViewport(viewport);
+    public void setSettingsStage(Stage stage) {
+        stage.addActor(settingsGroup);
+
     }
 
-    public Stage getStage() {
-        return settingsStage;
+    public void detachSettingsStage() {
+        settingsGroup.remove();
     }
 
     public void setReturnCallback(ChangeListener listener) {
@@ -87,6 +82,7 @@ public class SettingsManager implements GameObject {
             settingsBackBtn.removeListener(lastListener);
         }
         settingsBackBtn.addListener(listener);
+        lastListener = listener;
     }
 
     /**

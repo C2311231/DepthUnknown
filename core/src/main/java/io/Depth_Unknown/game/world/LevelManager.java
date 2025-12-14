@@ -8,6 +8,7 @@ import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.engine.rendering.Renderable3d;
 import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.EntityManager;
+import io.Depth_Unknown.game.Game;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.game.entities.Player;
 import io.Depth_Unknown.game.settings.SettingsManager;
@@ -49,10 +50,10 @@ public class LevelManager implements GameObject, Renderable3d {
         for (Level level : levels) {
             if (level.getName().equals(levelName) ) {
                 Gdx.input.setCursorCatched(true);
+                Game.unpauseGame();
                 entityManager.reset();
                 currentLevel = level;
                 currentLevel.create();
-                Gdx.input.setInputProcessor(inputProcessor);
                 return;
             }
         }
@@ -65,26 +66,30 @@ public class LevelManager implements GameObject, Renderable3d {
     public void beginLevel() throws RuntimeException {
         if (levels.length == 0) {
             throw new RuntimeException("Levels array is empty");
-
         }
         Gdx.input.setCursorCatched(true);
         Level level = levels[0];
         entityManager.reset();
         currentLevel = level;
         currentLevel.create();
-        Gdx.input.setInputProcessor(inputProcessor);
+        Game.unpauseGame();
     }
 
     @Override
     public void update(float delta) {
         if (currentLevel != null) {
             currentLevel.update(delta);
+            if (!Game.isGamePaused() && !Gdx.input.isCursorCatched())
+                Gdx.input.setCursorCatched(true);
+        }
+        if (Game.isGamePaused()) {
+            Gdx.input.setCursorCatched(false);
         }
     }
 
     @Override
     public void destroy() {
-
+        unloadLevel();
     }
 
     /**
@@ -104,5 +109,13 @@ public class LevelManager implements GameObject, Renderable3d {
         if (currentLevel != null) {
             currentLevel.render3d(modelBatch, environment);
         }
+    }
+
+    public void unloadLevel() {
+        if (currentLevel != null) {
+            currentLevel.destroy();
+        }
+        currentLevel = null;
+        Game.pauseGame();
     }
 }

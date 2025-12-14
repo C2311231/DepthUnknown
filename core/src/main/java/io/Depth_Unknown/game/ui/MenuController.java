@@ -1,4 +1,4 @@
-package io.Depth_Unknown.game.ui.menu;
+package io.Depth_Unknown.game.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,27 +11,27 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.game.settings.SettingsManager;
-import io.Depth_Unknown.game.ui.UiManager;
 import io.Depth_Unknown.game.world.Level;
 import io.Depth_Unknown.game.world.LevelManager;
 
 
 public class MenuController implements GameObject {
-    private Stage baseMenuStage;
-    private Stage levelSelectStage;
-    private Stage currentStage;
-    private final UiManager uiManager;
     private final ScreenViewport viewport = new ScreenViewport();
     private Label fpsLabel;
     private final SettingsManager settingsManager;
     private final LevelManager levelManager;
+    private final Renderer renderer;
+    private final LevelSelectController levelSelectController;
+    private Table baseButtonGroup;
 
-    public MenuController(UiManager uiManager, SettingsManager settingsManager, LevelManager levelManager) {
-        this.uiManager = uiManager;
+    public MenuController(SettingsManager settingsManager, LevelManager levelManager,  Renderer renderer, LevelSelectController levelSelectController) {
         this.settingsManager = settingsManager;
         this.levelManager = levelManager;
+        this.renderer = renderer;
+        this.levelSelectController = levelSelectController;
 
 
         /*
@@ -47,12 +47,6 @@ public class MenuController implements GameObject {
         fpsLabel = new Label("FPS: 0", labelStyle);
 
         /*
-         * Create the stages
-         * */
-        baseMenuStage = new Stage(viewport);
-        levelSelectStage = new Stage(viewport);
-
-        /*
          * Set up button styles
          * */
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
@@ -65,8 +59,8 @@ public class MenuController implements GameObject {
          * Set up the main menu stage
          * */
 
-        Table baseButtonGroup = new Table();
-        baseMenuStage.addActor(baseButtonGroup);
+        baseButtonGroup = new Table();
+        renderer.getStage().addActor(baseButtonGroup);
 
         baseButtonGroup.center().top();
         baseButtonGroup.setFillParent(true);
@@ -98,30 +92,39 @@ public class MenuController implements GameObject {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("Starting Game...");
                 levelManager.beginLevel();
-                uiManager.setMode(1);
+                deactivate();
             }
         });
 
         levelBtn.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("Showing Levels!");
-                setStage(levelSelectStage);
+                System.out.println("Opening Levels");
+                deactivate();
+                levelSelectController.activate();
+                levelSelectController.setReturnCallback(new ChangeListener() {
+                    @Override
+                    public void changed (ChangeEvent event, Actor actor) {
+                        levelSelectController.deactivate();
+                        System.out.println("Back to Main Menu...");
+                        activate();
+                    }
+                });
             }
         });
 
         settingsBtn.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("Opening Settings");
-                settingsManager.setViewport(viewport);
+                deactivate();
+                settingsManager.setSettingsStage(renderer.getStage());
                 settingsManager.setReturnCallback(new ChangeListener() {
                     @Override
                     public void changed (ChangeEvent event, Actor actor) {
-                        System.out.println("Home!");
-                        setStage(baseMenuStage);
+                        settingsManager.detachSettingsStage();
+                        System.out.println("Back to Main Menu...");
+                        activate();
                     }
                 });
-
-                setStage(settingsManager.getStage());
             }
         });
 
@@ -130,78 +133,32 @@ public class MenuController implements GameObject {
                 Gdx.app.exit();
             }
         });
-
-        /*
-         * Set up the levels stage
-         * */
-
-        Table levelsButtonGroup = new Table();
-        levelSelectStage.addActor(levelsButtonGroup);
-
-        levelsButtonGroup.center().top();
-        levelsButtonGroup.setFillParent(true);
-        levelsButtonGroup.pad(5);
-
-        levelsButtonGroup.align(Align.center);
-        levelsButtonGroup.padTop(50);
-        levelsButtonGroup.padBottom(50);
-
-        // Create Buttons
-
-        for (Level level: levelManager.getLevels()) {
-            TextButton levelSelectBtn = new TextButton(level.getName(), style);
-            levelSelectBtn.pad(20);
-            levelsButtonGroup.add(levelSelectBtn).uniformX().fillX().padBottom(paddingBetween).row();
-            levelSelectBtn.addListener(new ChangeListener() {
-                public void changed (ChangeEvent event, Actor actor) {
-                    System.out.println("Starting " + level.getName());
-                    levelManager.beginLevel(level.getName());
-                    uiManager.setMode(1);
-                }
-            });
-        }
-        TextButton backBtn = new TextButton("Back", style);
-        backBtn.pad(20);
-        levelsButtonGroup.add(backBtn).uniformX().fillX().row();
-
-        backBtn.addListener(new ChangeListener() {
-            public void changed (ChangeEvent event, Actor actor) {
-                setStage(baseMenuStage);
-            }
-        });
-
-        setStage(baseMenuStage);
     }
 
-    public void setStage(Stage stage) {
-        currentStage = stage;
-        Gdx.input.setInputProcessor(currentStage);
-        currentStage.addActor(fpsLabel);
+    public void activate() {
+        renderer.getStage().addActor(fpsLabel);
+        renderer.getStage().addActor(baseButtonGroup);
     }
 
+    public void deactivate() {
+        fpsLabel.remove();
+        baseButtonGroup.remove();
+    }
 
     @Override
     public void destroy() {
-        baseMenuStage.dispose();
-        levelSelectStage.dispose();
     }
 
     @Override
     public void render(float delta) {
-        currentStage.draw();
     }
 
     @Override
     public void update(float delta) {
         fpsLabel.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
-        currentStage.act(Gdx.graphics.getDeltaTime());
+        fpsLabel.setPosition(10, Gdx.graphics.getHeight() - 20);
     }
 
     public void resize(int width, int height) {
-        fpsLabel.setPosition(10, Gdx.graphics.getHeight() - 20);
-//        baseMenuStage.getViewport().update(width, height, true);
-//        levelSelectStage.getViewport().update(width, height, true);
-//        settingsStage.getViewport().update(width, height, true);
-        currentStage.getViewport().update(width, height, true);
     }
 }

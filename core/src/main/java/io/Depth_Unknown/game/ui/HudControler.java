@@ -1,8 +1,20 @@
-package io.Depth_Unknown.game.ui.hud;
+package io.Depth_Unknown.game.ui;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import io.Depth_Unknown.game.GameObject;
 
+import java.util.ArrayList;
+
 public class HudControler implements GameObject {
+    private ArrayList<Actor> actors = new ArrayList<>();
+
+    public HudControler() {
+        registerActors();
+    }
+
+    private void registerActors() {
+
+    }
 
     @Override
     public void destroy() {
@@ -19,6 +31,7 @@ public class HudControler implements GameObject {
 
     @Override
     public void update(float delta) {
+
 
     }
 

@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
+import io.Depth_Unknown.game.Game;
 import io.Depth_Unknown.game.GameObject;
 
 import java.util.HashMap;
@@ -90,7 +91,9 @@ public class PhysicsEngine implements GameObject {
      */
     @Override
     public void update(float delta) {
-        world.stepSimulation(delta, 5, 1f / 240f);
+        if (!Game.isGamePaused()) {
+            world.stepSimulation(delta, 5, 1f / 240f);
+        }
     }
 
     /**

@@ -19,7 +19,6 @@ public class Level implements GameObject, Renderable3d {
         this.script = script;
         this.player = player;
         this.physicsEngine = physicsEngine;
-        this.lvModel = new LevelModel(LevelLoader.loadLevelModel(script), physicsEngine);
     }
 
     public String getName() {
@@ -39,12 +38,12 @@ public class Level implements GameObject, Renderable3d {
     public void create() {
         // Starts the level
         player.setPosition(script.getPlayerSpawnPosition());
-
+        this.lvModel = new LevelModel(LevelLoader.loadLevelModel(script), physicsEngine);
     }
 
     @Override
     public void destroy() {
-
+        lvModel.dispose();
     }
 
     /**

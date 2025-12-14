@@ -6,13 +6,12 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import io.Depth_Unknown.engine.rendering.Renderable2d;
 import io.Depth_Unknown.engine.rendering.Renderable3d;
-import io.Depth_Unknown.engine.rendering.RenderableHud;
 import io.Depth_Unknown.game.entities.Entity;
 import io.Depth_Unknown.game.entities.Player;
 
 import java.util.ArrayList;
 
-public class EntityManager implements GameObject, Renderable3d, Renderable2d, RenderableHud {
+public class EntityManager implements GameObject, Renderable3d, Renderable2d {
 
     private ArrayList<Entity> entities = new ArrayList<>(20);
 
@@ -80,14 +79,6 @@ public class EntityManager implements GameObject, Renderable3d, Renderable2d, Re
                 ((Renderable3d) entity).render3d(modelBatch, environment);
             }
         }
-
-    }
-
-    /**
-     * @param stage
-     */
-    @Override
-    public void renderHud(Stage stage) {
 
     }
 }

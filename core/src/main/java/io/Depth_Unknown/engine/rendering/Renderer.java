@@ -127,9 +127,6 @@ public class Renderer {
             }
         }
         spriteBatch.end();
-
-        // TODO: Work in HUD rendering later.
-
         stage.act();
         stage.draw();
 
@@ -146,5 +143,6 @@ public class Renderer {
         camera2d.viewportHeight = height;
         camera3d.viewportWidth = width;
         camera3d.viewportHeight = height;
+        stage.getViewport().update(width, height, true);
     }
 }

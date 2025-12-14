@@ -14,7 +14,7 @@ public class LevelModel extends PhysicsObject implements Renderable3d {
     private final ModelInstance modelInstance;
 
     public LevelModel(Model model, PhysicsEngine physicsEngine) {
-        this.modelInstance = new  ModelInstance(model);
+        this.modelInstance = new ModelInstance(model);
         physicsBody = physicsEngine.addStaticBody(physicsEngine.getMapShape(model), new Matrix4());
         physicsBody.setActivationState(CollisionConstants.DISABLE_DEACTIVATION);
         physicsBody.getCollisionShape().setMargin(0.01f);
@@ -28,5 +28,10 @@ public class LevelModel extends PhysicsObject implements Renderable3d {
     @Override
     public void render3d(ModelBatch modelBatch, Environment environment) {
         modelBatch.render(modelInstance, environment);
+    }
+
+    public void dispose() {
+        physicsBody.dispose();
+        modelInstance.model.dispose();
     }
 }

@@ -15,6 +15,7 @@ import io.Depth_Unknown.engine.input.EngineInputProcessor;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
 import io.Depth_Unknown.engine.rendering.Renderable3d;
 import io.Depth_Unknown.engine.rendering.Renderer;
+import io.Depth_Unknown.game.Game;
 import io.Depth_Unknown.game.settings.Setting;
 import io.Depth_Unknown.game.settings.SettingsManager;
 
@@ -219,6 +220,12 @@ public class Player extends Entity implements Renderable3d {
     // TODO Separate this out into more submethods
     @Override
     public void update(float delta) {
+        if (Game.isGamePaused()) {
+            crosshairHitImage.remove();
+            crosshairMissImage.remove();
+            return;
+        }
+
         super.update(delta);
         updateCrosshairHitImage();
 
