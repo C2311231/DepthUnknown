@@ -520,8 +520,11 @@ public class Player extends Entity implements Renderable3d {
         renderer.getCamera3d().rotate(renderer.getCamera2d().view);
         renderer.getCamera3d().update();
         renderer.setCurrentCamera(renderer.getCamera3d());
+        Vector3 inertia = new Vector3();
         physicsBody.setCollisionShape(player3dShape);
-        physicsBody.setLinearFactor(Vector3.One);
+        player3dShape.calculateLocalInertia(1, inertia);
+        physicsBody.setMassProps(1, inertia);
+        physicsBody.updateInertiaTensor();
 
     }
     // TODO Fix this so the transition is smoother
