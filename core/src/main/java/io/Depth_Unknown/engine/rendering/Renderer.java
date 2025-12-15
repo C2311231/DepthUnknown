@@ -130,7 +130,7 @@ public class Renderer {
         stage.act();
         stage.draw();
         if (debug) {
-            debugDrawer.begin(camera3d);
+            debugDrawer.begin(currentCamera);
             physicsEngine.getWorld().debugDrawWorld();
             debugDrawer.end();
         }

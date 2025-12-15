@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
-import com.badlogic.gdx.physics.bullet.collision.CollisionConstants;
-import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import io.Depth_Unknown.engine.input.InputManager;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
@@ -54,6 +52,9 @@ public class Player extends Entity implements Renderable3d {
     private float yaw = 0f;
     private float pitch = 0f;
 
+    private btCapsuleShape player3dShape;
+    private btCollisionShape box;
+
     Image crosshairHitImage = new Image(new Texture("Player/crosshairHIT.png"));
     Image crosshairMissImage = new Image(new Texture("Player/crosshairMiss.png"));
     Image currentCrossHair = crosshairMissImage;
@@ -82,10 +83,11 @@ public class Player extends Entity implements Renderable3d {
         if (currentCamera2D) {
             crosshairMissImage.remove();
             crosshairHitImage.remove();
+            currentCrossHair = null;
             return;
         }
         if (raycastCameraPositionTest()) {
-            if (currentCrossHair.equals(crosshairHitImage))
+            if (currentCrossHair != null && currentCrossHair.equals(crosshairHitImage))
                 return;
             currentCrossHair = crosshairHitImage;
             crosshairMissImage.remove();
@@ -96,7 +98,7 @@ public class Player extends Entity implements Renderable3d {
             renderer.getStage().addActor(crosshairHitImage);
         }
         else {
-            if (currentCrossHair.equals(crosshairMissImage))
+            if (currentCrossHair != null && currentCrossHair.equals(crosshairMissImage))
                 return;
             currentCrossHair = crosshairMissImage;
             crosshairHitImage.remove();
@@ -148,9 +150,9 @@ public class Player extends Entity implements Renderable3d {
         // Temp model
         model = modelBuilder.createCapsule(0.2f, 1f, 15, new Material(ColorAttribute.createDiffuse(Color.GREEN)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         instance = new ModelInstance(model);
-        btCapsuleShape shape = new btCapsuleShape(0.2f, 1f-2*0.2f); // + 0.35f);// Apparently for physics height is the distance between the capsule hemispheres, not including the radius. But rendering includes the radius... Extra margin was added to prevent clipping...
-        shape.setMargin(0.01f);
-        physicsBody = physics.addRigidBody(shape, new Matrix4(), 1);
+        player3dShape = new btCapsuleShape(0.2f, 1f-2*0.2f); // + 0.35f);// Apparently for physics height is the distance between the capsule hemispheres, not including the radius. But rendering includes the radius... Extra margin was added to prevent clipping...
+        player3dShape.setMargin(0.01f);
+        physicsBody = physics.addRigidBody(player3dShape, new Matrix4(), 1);
         physicsBody.setAngularFactor(Vector3.Zero);
         physicsBody.setActivationState(CollisionConstants.DISABLE_DEACTIVATION);
         physicsBody.setFriction(0.0f);
@@ -194,7 +196,7 @@ public class Player extends Entity implements Renderable3d {
             Vector3 to = physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0,-0.8f,0);
 
             // Check if on ground (or close enough)
-            if (physics.rayCast(from, to, new ClosestRayResultCallback(from, to))) {
+            if (currentCamera2D || physics.rayCast(from, to, new ClosestRayResultCallback(from, to))) {
                 physicsBody.applyCentralImpulse(new Vector3(0f, jumpForce, 0f));
             }
         }, () -> {
@@ -215,6 +217,8 @@ public class Player extends Entity implements Renderable3d {
     public void destroy() {
         super.destroy();
         model.dispose();
+        box.dispose();
+        player3dShape.dispose();
     }
 
     // TODO Separate this out into more submethods
@@ -242,32 +246,33 @@ public class Player extends Entity implements Renderable3d {
         else
             updateMovement2d(delta);
 
-        // Get mouse rotation change (easier than bundling it in input processor)
-        float dx = Gdx.input.getDeltaX();
-        float dy = Gdx.input.getDeltaY();
+        if (!currentCamera2D && !cameraSwitching) {
+            // Get mouse rotation change (easier than bundling it in input processor)
+            float dx = Gdx.input.getDeltaX();
+            float dy = Gdx.input.getDeltaY();
 
-        float sensitivity = ((float) this.sensitivity.getValue()) / 100;
+            float sensitivity = ((float) this.sensitivity.getValue()) / 100;
 
-        yaw += -dx * sensitivity;  // mouse left/right
-        pitch += -dy * sensitivity;  // mouse up/down
+            yaw += -dx * sensitivity;  // mouse left/right
+            pitch += -dy * sensitivity;  // mouse up/down
 
-        float maxPitch = (float) Math.toRadians(89);
-        pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+            float maxPitch = (float) Math.toRadians(89);
+            pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
 
-        Vector3 position = physicsBody.getWorldTransform().getTranslation(new Vector3());
-        Matrix4 mat = new Matrix4();
-        mat.setFromEulerAnglesRad(yaw, 0, 0);
-        mat.trn(position);
-        physicsBody.setWorldTransform(mat);
-        physicsBody.getMotionState().setWorldTransform(mat);
+            Vector3 position = physicsBody.getWorldTransform().getTranslation(new Vector3());
+            Matrix4 mat = new Matrix4();
+            mat.setFromEulerAnglesRad(yaw, 0, 0);
+            mat.trn(position);
+            physicsBody.setWorldTransform(mat);
+            physicsBody.getMotionState().setWorldTransform(mat);
 
-        float cosPitch = (float) Math.cos(pitch);
-
-        if (lockCamtoPlayer) {
-            renderer.setCamera3dPosition(physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0, 0.5f, 0));
-            renderer.getCamera3d().direction.set(-(float) Math.sin(yaw) * cosPitch,
-                (float) Math.sin(pitch),
-                -(float) Math.cos(yaw) * cosPitch).setLength(1).nor();
+            float cosPitch = (float) Math.cos(pitch);
+            if (lockCamtoPlayer) {
+                renderer.setCamera3dPosition(physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0, 0.5f, 0));
+                renderer.getCamera3d().direction.set(-(float) Math.sin(yaw) * cosPitch,
+                    (float) Math.sin(pitch),
+                    -(float) Math.cos(yaw) * cosPitch).setLength(1).nor();
+            }
         }
 
         Camera cam = renderer.getCamera2d();
@@ -389,10 +394,12 @@ public class Player extends Entity implements Renderable3d {
         Vector3 from = physicsBody.getWorldTransform().getTranslation(new Vector3());
         Vector3 to = physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0,-0.8f,0);
 
-        // Check if on ground (or close enough)
-        if (physicsEngine.rayCast(from, to, new ClosestRayResultCallback(from, to))) {
-            physicsBody.setLinearVelocity(newVel);
-        }
+        // Check if on ground (or close enough) Disabled for now due to how 2d physics is handled
+//        if (physicsEngine.rayCast(from, to, new ClosestRayResultCallback(from, to))) {
+//            physicsBody.setLinearVelocity(newVel);
+//        }
+
+        physicsBody.setLinearVelocity(newVel);
 
     }
 
@@ -403,10 +410,52 @@ public class Player extends Entity implements Renderable3d {
         cameraTimeStep = 0.0;
         cameraStartPosition = renderer.getCamera3d().position;
         renderer.getCamera2d().position.set(position);
-        renderer.getCamera2d().update();
         renderer.getCamera2d().direction.set(direction);
         renderer.getCamera2d().up.set(Vector3.Y);  // world up (0, 1, 0)
         renderer.getCamera2d().update();
+
+        Vector3 posA = physicsBody.getWorldTransform().getTranslation(new Vector3());
+        Vector3 posB = posA.cpy().sub(position).setLength(100).add(posA);
+        posB.y = posA.y; //Ensures ray casts in flat plane
+        ClosestRayResultCallback callback = new ClosestRayResultCallback(posA, posB);
+        physicsEngine.rayCast(posA, posB, callback);
+        float distance2FarWall = 100;
+        if (callback.hasHit()) {
+            Vector3 hitPoint = new Vector3();
+            callback.getHitPointWorld(hitPoint);
+            Vector3 delta = posA.cpy().sub(hitPoint);
+            distance2FarWall = (float) Math.sqrt((delta.x * delta.x) + (delta.z * delta.z));
+        }
+        Vector3 delta = position.cpy().sub(posA);
+        float distance2Camera2d = (float) Math.sqrt((delta.x * delta.x) + (delta.z * delta.z));
+        box = new btBoxShape(new Vector3(0.2f, 0.5f, (distance2FarWall + distance2Camera2d)/2 - 1)); // -1 is extra margin to increase repeatability.
+
+        System.out.println("distance2FarWall: " + distance2FarWall);
+        System.out.println("distance2Camera2d: " + distance2Camera2d);
+        //renderer.getCamera2d().far = distance2FarWall + distance2Camera2d;
+        //renderer.getCamera2d().update();
+        float playerDepthLocation = (distance2FarWall + distance2Camera2d)/2;
+        Vector3 newPlayerPos = posA.cpy().sub(position.cpy()).setLength(playerDepthLocation).add(position);
+
+        Vector3 inertia = new Vector3();
+        physicsBody.setCollisionShape(box);
+        box.calculateLocalInertia(1, inertia);
+        physicsBody.setMassProps(1, inertia);
+        physicsBody.updateInertiaTensor();
+
+        //physicsBody.setLinearFactor(Vector3.Zero);
+
+        direction = direction.cpy().nor();
+        yaw = MathUtils.atan2(direction.x, direction.z);
+        pitch = MathUtils.asin(direction.y);
+
+        float maxPitch = (float) Math.toRadians(89);
+        pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+        Matrix4 mat = new Matrix4();
+        mat.setFromEulerAnglesRad(yaw, 0, 0);
+        mat.trn(newPlayerPos);
+        physicsBody.setWorldTransform(mat);
+        physicsBody.getMotionState().setWorldTransform(mat);
     }
 
     // Created with AI assistance
@@ -459,6 +508,7 @@ public class Player extends Entity implements Renderable3d {
         }
     }
 
+    // TODO Use raycasting along player collider to find platforms and set player position to center of closest platform to the camera.
     public void switchCamera3D() {
         lockCamtoPlayer = false;
         cameraSwitching = true;
@@ -470,6 +520,9 @@ public class Player extends Entity implements Renderable3d {
         renderer.getCamera3d().rotate(renderer.getCamera2d().view);
         renderer.getCamera3d().update();
         renderer.setCurrentCamera(renderer.getCamera3d());
+        physicsBody.setCollisionShape(player3dShape);
+        physicsBody.setLinearFactor(Vector3.One);
+
     }
     // TODO Fix this so the transition is smoother
     private void handleCameraSwitch3D(float delta) {

@@ -18,7 +18,7 @@ public class level1 extends LevelScript {
      */
     @Override
     public String getLevelModelName() {
-        return "level1.g3db";
+        return "demo.g3db";
     }
 
     /**
