@@ -20,12 +20,18 @@ public class EntityManager implements GameObject, Renderable3d, Renderable2d {
      * Destroys all entities BESIDES the player
      * */
     public void reset() {
+        Entity player = null;
         for (Entity entity : entities) {
             if (entity instanceof Player) {
+                player = entity; // Save pointer to player to be readded after other entities are removed
                 continue;
             }
             entity.destroy();
         }
+        entities.clear();
+        if (player != null)
+            entities.add(player);
+
     }
 
     @Override

@@ -16,15 +16,16 @@ import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.Game;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.engine.settings.SettingsManager;
+import io.Depth_Unknown.game.world.LevelManager;
 
 public class PauseMenuControler implements GameObject {
-    private final Game.LevelManager levelManager;
+    private final LevelManager levelManager;
     private final SettingsManager settingsManager;
     private final Renderer renderer;
     private final Table baseButtonGroup;
     private final MenuController menuController;
 
-    public PauseMenuControler(SettingsManager settingsManager, Game.LevelManager levelManager, Renderer renderer, MenuController menuController, InputManager inputProcessor) {
+    public PauseMenuControler(SettingsManager settingsManager, LevelManager levelManager, Renderer renderer, MenuController menuController, InputManager inputProcessor) {
         this.levelManager = levelManager;
         this.settingsManager = settingsManager;
         this.renderer = renderer;

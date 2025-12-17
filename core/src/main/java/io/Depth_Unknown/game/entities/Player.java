@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import io.Depth_Unknown.engine.input.InputManager;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
@@ -57,7 +58,7 @@ public class Player extends Entity implements Renderable3d {
 
     Image crosshairHitImage = new Image(new Texture("Player/crosshairHIT.png"));
     Image crosshairMissImage = new Image(new Texture("Player/crosshairMiss.png"));
-    Image currentCrossHair = crosshairMissImage;
+    Image currentCrossHair = null;
 
     // 2D camera following variables
     float followStrength = 6f;       // higher = snappier
@@ -116,7 +117,6 @@ public class Player extends Entity implements Renderable3d {
         Vector3 to = from.cpy().mulAdd(direction, 50);
         ClosestRayResultCallback cb = new ClosestRayResultCallback(from, to);
         physicsEngine.rayCast(from, to, cb);
-
         return cb.hasHit();
     }
 
@@ -136,8 +136,6 @@ public class Player extends Entity implements Renderable3d {
 
             Vector3 camOffset = hitNormal.cpy().scl(0.05f); // small offset
             switchCamera2D(hitPoint.cpy().add(camOffset), hitNormal);
-
-
         }
     }
 
@@ -193,7 +191,7 @@ public class Player extends Entity implements Renderable3d {
 
         inputProcessor.registerControl("Jump", Input.Keys.SPACE, () -> {
             Vector3 from = physicsBody.getWorldTransform().getTranslation(new Vector3());
-            Vector3 to = physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0,-0.8f,0);
+            Vector3 to = physicsBody.getWorldTransform().getTranslation(new Vector3()).add(0,-0.6f,0);
 
             // Check if on ground (or close enough)
             if (currentCamera2D || physics.rayCast(from, to, new ClosestRayResultCallback(from, to))) {
@@ -211,6 +209,10 @@ public class Player extends Entity implements Renderable3d {
     @Override
     public void render3d(ModelBatch modelBatch, Environment environment) {
         modelBatch.render(instance, environment);
+    }
+
+    public void startLevel() {
+        currentCrossHair = null;
     }
 
     @Override
@@ -327,14 +329,6 @@ public class Player extends Entity implements Renderable3d {
         }
     }
 
-    public void setPosition(float x, float y, float z) {
-        physicsBody.setWorldTransform(physicsBody.getWorldTransform().setTranslation(x, y, z));
-    }
-
-    public void setPosition(Vector3 target) {
-        physicsBody.setWorldTransform(physicsBody.getWorldTransform().setTranslation(target));
-    }
-
     private void updateMovement3d(float delta) {
         Vector3 currentVel = physicsBody.getLinearVelocity();
 
@@ -418,22 +412,28 @@ public class Player extends Entity implements Renderable3d {
         Vector3 posB = posA.cpy().sub(position).setLength(100).add(posA);
         posB.y = posA.y; //Ensures ray casts in flat plane
         ClosestRayResultCallback callback = new ClosestRayResultCallback(posA, posB);
+
         physicsEngine.rayCast(posA, posB, callback);
+
         float distance2FarWall = 100;
+
         if (callback.hasHit()) {
             Vector3 hitPoint = new Vector3();
             callback.getHitPointWorld(hitPoint);
             Vector3 delta = posA.cpy().sub(hitPoint);
             distance2FarWall = (float) Math.sqrt((delta.x * delta.x) + (delta.z * delta.z));
         }
+
         Vector3 delta = position.cpy().sub(posA);
         float distance2Camera2d = (float) Math.sqrt((delta.x * delta.x) + (delta.z * delta.z));
         box = new btBoxShape(new Vector3(0.2f, 0.5f, (distance2FarWall + distance2Camera2d)/2 - 1)); // -1 is extra margin to increase repeatability.
 
-        System.out.println("distance2FarWall: " + distance2FarWall);
-        System.out.println("distance2Camera2d: " + distance2Camera2d);
-        //renderer.getCamera2d().far = distance2FarWall + distance2Camera2d;
-        //renderer.getCamera2d().update();
+        /*
+        This would set the max distance the player could see to the end of the player collider (The furthest physic object it could interact with)
+        Removed for now as it prevents rendering of some object in certain 2d scenarios.
+        renderer.getCamera2d().far = distance2FarWall + distance2Camera2d;
+        renderer.getCamera2d().update();
+        */
         float playerDepthLocation = (distance2FarWall + distance2Camera2d)/2;
         Vector3 newPlayerPos = posA.cpy().sub(position.cpy()).setLength(playerDepthLocation).add(position);
 
@@ -508,8 +508,48 @@ public class Player extends Entity implements Renderable3d {
         }
     }
 
-    // TODO Use raycasting along player collider to find platforms and set player position to center of closest platform to the camera.
+    /**
+     * This is not the most efficient way to do it, but it worked first try without any debugging, so I am not touching it!
+     * */
+    private void snapToFloor() {
+        Vector3 playerPos = physicsBody.getWorldTransform().getTranslation(new Vector3());
+        float angle = physicsBody.getWorldTransform().getRotation(new Quaternion()).getAngleAroundRad(Vector3.Y);
+        if (!(physicsBody.getCollisionShape() instanceof btBoxShape)) {
+            throw new RuntimeException("Can't snap to floor with non-box shape");
+        }
+        boolean[] floorChecks = new boolean[100];
+        float colliderLength = ((btBoxShape) physicsBody.getCollisionShape()).getHalfExtentsWithoutMargin().z * 2;
+
+        // Create raycasts aligned with the collider along the distance of the collider spaced equally
+        for (int i = 0; i < floorChecks.length; i++) {
+            Vector3 rayLocation = PhysicsEngine.rotatePointAroundY(new Vector3(playerPos.x, playerPos.y, (i+1) * (colliderLength/floorChecks.length) + playerPos.x - colliderLength/2), playerPos, angle);
+            Vector3 to = rayLocation.cpy().add(0,-0.8f,0);
+
+            // Check if point is on the ground (or close enough)
+            floorChecks[i] = physicsEngine.rayCast(rayLocation, to, new ClosestRayResultCallback(rayLocation, to));
+        }
+
+        // Process hits to find the center of first hit platform (Or leave player in current location.)
+        int hitCount = 0;
+        float centerLocation = floorChecks.length/2.0f;
+        for (int i = 0; i < floorChecks.length; i++) {
+            if (floorChecks[i]) {
+                hitCount++;
+            } else {
+                if (hitCount > 0) {
+                    centerLocation = i + 1 - hitCount/2.0f;
+                    break;
+                }
+            }
+        }
+        Vector3 newPlayerLocation = PhysicsEngine.rotatePointAroundY(new Vector3(playerPos.x, playerPos.y, (centerLocation) * (colliderLength/floorChecks.length) + playerPos.x - colliderLength/2), playerPos, angle);
+        setPosition(newPlayerLocation);
+    }
+
     public void switchCamera3D() {
+        // Snaps player to the floor closest to the camera
+        snapToFloor();
+
         lockCamtoPlayer = false;
         cameraSwitching = true;
         cameraTimeStep = 0.0;

@@ -1,16 +1,26 @@
 package io.Depth_Unknown.levels;
 
 import com.badlogic.gdx.math.Vector3;
+import io.Depth_Unknown.engine.physics.PhysicsEngine;
+import io.Depth_Unknown.game.EntityManager;
+import io.Depth_Unknown.game.entities.Player;
+import io.Depth_Unknown.game.entities.Trigger;
 import io.Depth_Unknown.game.world.LevelScript;
 
-public class level1 extends LevelScript {
+public class test1 extends LevelScript {
+
+    @Override
+    public void create() {
+    }
+
+
     /**
      * @return Player spawn coordinates in the level.
      */
     @Override
     public Vector3 getPlayerSpawnPosition() {
         //return new Vector3(0,0.85f,0);
-        return new Vector3(0,70f,0);
+        return new Vector3(0,5f,0);
     }
 
     /**
@@ -18,7 +28,7 @@ public class level1 extends LevelScript {
      */
     @Override
     public String getLevelModelName() {
-        return "demo.g3db";
+        return "test1.g3db";
     }
 
     /**

@@ -11,24 +11,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.Depth_Unknown.engine.rendering.Renderer;
-import io.Depth_Unknown.game.Game;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.engine.settings.SettingsManager;
 import io.Depth_Unknown.game.world.Level;
+import io.Depth_Unknown.game.world.LevelManager;
 
 
 public class LevelSelectController implements GameObject {
     private final ScreenViewport viewport = new ScreenViewport();
     private Label fpsLabel;
     private final SettingsManager settingsManager;
-    private final Game.LevelManager levelManager;
+    private final LevelManager levelManager;
     private final Renderer renderer;
     private final Table levelsButtonGroup;
     private TextButton backBtn;
     private ChangeListener lastListener;
 
 
-    public LevelSelectController(SettingsManager settingsManager, Game.LevelManager levelManager, Renderer renderer) {
+    public LevelSelectController(SettingsManager settingsManager, LevelManager levelManager, Renderer renderer) {
         this.settingsManager = settingsManager;
         this.levelManager = levelManager;
         this.renderer = renderer;

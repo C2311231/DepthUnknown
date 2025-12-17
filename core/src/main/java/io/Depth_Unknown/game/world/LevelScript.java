@@ -6,6 +6,11 @@ import io.Depth_Unknown.game.GameObject;
 public abstract class LevelScript implements GameObject {
     public abstract Vector3 getPlayerSpawnPosition();
     public abstract String getLevelModelName();
+
+    public void create() {
+
+    }
+
     public void onTrigger() {
 
     }

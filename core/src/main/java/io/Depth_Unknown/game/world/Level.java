@@ -39,6 +39,8 @@ public class Level implements GameObject, Renderable3d {
         // Starts the level
         player.setPosition(script.getPlayerSpawnPosition());
         this.lvModel = new LevelModel(LevelLoader.loadLevelModel(script), physicsEngine);
+        script.create();
+        player.startLevel();
     }
 
     @Override

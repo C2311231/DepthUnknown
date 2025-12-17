@@ -14,18 +14,19 @@ import io.Depth_Unknown.engine.rendering.Renderer;
 import io.Depth_Unknown.game.Game;
 import io.Depth_Unknown.game.GameObject;
 import io.Depth_Unknown.engine.settings.SettingsManager;
+import io.Depth_Unknown.game.world.LevelManager;
 
 
 public class MenuController implements GameObject {
     private final ScreenViewport viewport = new ScreenViewport();
     private Label fpsLabel;
     private final SettingsManager settingsManager;
-    private final Game.LevelManager levelManager;
+    private final LevelManager levelManager;
     private final Renderer renderer;
     private final LevelSelectController levelSelectController;
     private Table baseButtonGroup;
 
-    public MenuController(SettingsManager settingsManager, Game.LevelManager levelManager, Renderer renderer, LevelSelectController levelSelectController) {
+    public MenuController(SettingsManager settingsManager, LevelManager levelManager, Renderer renderer, LevelSelectController levelSelectController) {
         this.settingsManager = settingsManager;
         this.levelManager = levelManager;
         this.renderer = renderer;
