@@ -4,8 +4,8 @@ Depth Unknown is a puzzle game in development that combines 2D and 3D mechanics 
 This project is currently in the early development and planning stage for my CS2430 final project.
 
 ## Status
-🚧 Early development - game is not yet functional
 
+🚧 Early development - Core systems are functional with very basic demo level.
 
 ## Platforms
 
@@ -13,19 +13,25 @@ This project is currently in the early development and planning stage for my CS2
 - `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
 
 ## Building and Running
+
 1. Open project directory in a terminal.
+
 ### Run Project
+
 Execute
 `
 gradlew lwjgl3:run
 `
+
 ### Build Project
+
 Execute
 `
 gradlew lwjgl3:build
 `
 
 ### Create a JAR file
+
 Execute
 `
 gradlew lwjgl3:dist
@@ -52,5 +58,6 @@ Useful Gradle tasks and flags:
 - `lwjgl3:run`: starts the application.
 - `test`: runs unit tests (if any).
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
+Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should
+be replaced with the ID of a specific project.
 For example, `core:clean` removes `build` folder only from the `core` project.
