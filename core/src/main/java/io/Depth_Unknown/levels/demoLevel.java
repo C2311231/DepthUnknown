@@ -25,7 +25,8 @@ public class demoLevel extends LevelScript {
         endLevelTrigger = new Trigger(physicsEngine, -6.04833f, 3.18496f , 6.09669f, 1);
         entityManager.addEntity(endLevelTrigger);
         endLevelTrigger.registerTriggerCallback(() -> {
-            System.out.println("Level Completed!!");
+            if (!player.isCurrentCamera2D() && !player.isCameraSwitching())
+                System.out.println("Level Completed!!");
         }, player.getPhysicsBody());
     }
 

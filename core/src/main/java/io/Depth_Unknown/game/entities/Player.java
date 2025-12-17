@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import io.Depth_Unknown.engine.input.InputManager;
 import io.Depth_Unknown.engine.physics.PhysicsEngine;
@@ -39,6 +38,14 @@ public class Player extends Entity implements Renderable3d {
     private Vector3 cameraDestination;
     private Vector3 cameraStartPosition;
     private double cameraTimeStep;
+
+    public boolean isCurrentCamera2D() {
+        return currentCamera2D;
+    }
+
+    public boolean isCameraSwitching() {
+        return cameraSwitching;
+    }
 
     private boolean currentCamera2D;
 
