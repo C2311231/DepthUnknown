@@ -1,7 +1,7 @@
 # Depth Unknown
 
-Depth Unknown is a puzzle game in development that combines 2D and 3D mechanics in Java.
-This project is currently in the early development and planning stage for my CS2430 final project.
+Depth Unknown is a very early proof of concept puzzle game that combines 2D and 3D mechanics in Java.
+This project is no longer in development.
 
 ## Status
 
